@@ -1,24 +1,19 @@
-#include <SFML/Graphics.hpp>
+#include <windows.h>
+#include "src/GameManager.h"
 
 int main()
 {
-	sf::RenderWindow window(sf::VideoMode(200, 200), "SFML works!");
-	sf::CircleShape shape(100.f);
-	shape.setFillColor(sf::Color::Green);
-
-	while (window.isOpen())
-	{
-		sf::Event event;
-		while (window.pollEvent(event))
+	try {
+		GameManager game({ 800, 600 }, false);
+		while (game.isRunning())
 		{
-			if (event.type == sf::Event::Closed)
-				window.close();
+			game.pollEvents();
+			game.render();
 		}
-
-		window.clear();
-		window.draw(shape);
-		window.display();
+	} catch (std::exception& e) {
+		// error handling is done outside the game source files, to easily rewrite the game to another OS
+		MessageBox(NULL, e.what(), "Error!", MB_OK | MB_ICONERROR);
+		return EXIT_FAILURE;
 	}
-
-	return 0;
+	return EXIT_SUCCESS;
 }

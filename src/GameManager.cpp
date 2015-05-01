@@ -3,11 +3,10 @@
 
 GameManager::GameManager(sf::Vector2u resolution, bool fullscreen)
 {
-	windowHandle.create(
-		sf::VideoMode(resolution.x, resolution.y), 
-		WINDOW_TITLE, 
-		fullscreen ? sf::Style::Fullscreen : sf::Style::Default
-		);
+	windowHandle.create(sf::VideoMode(resolution.x, resolution.y), 
+						WINDOW_TITLE, 
+						fullscreen ? sf::Style::Fullscreen : sf::Style::Default);
+	Drawable::windowHandle = &windowHandle;
 }
 
 GameManager::~GameManager()
@@ -26,7 +25,8 @@ void GameManager::pollEvents()
 
 void GameManager::render()
 {
-
+	windowHandle.clear();
+	//rendering items
 	windowHandle.display();
 }
 

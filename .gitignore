@@ -1,4 +1,6 @@
 SFML-2.2
+Debug
+Release
 
 # Compiled Object files
 *.slo

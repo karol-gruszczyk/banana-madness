@@ -7,14 +7,16 @@ Intro::Intro(std::string introSoundFilename)
 		throw FileLoadException(introSoundFilename);
 }
 
-bool Intro::render(sf::RenderWindow& windowHandle)
+void Intro::render(BananaMadness::GameState& gameState)
 {
 	if (musicHandle.getStatus() != sf::Sound::Status::Playing)
 	{
 		if (musicPlayed)
-			return true;
+		{
+			gameState = BananaMadness::GameState::IN_MENU;
+			musicPlayed = false;
+		}
 		musicHandle.play();
 		musicPlayed = true;
 	}
-	return false;
 }

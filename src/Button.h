@@ -6,8 +6,9 @@
 class Button : public Drawable
 {
 public:
-	typedef void(*funcPointer)();
-	Button(std::string title, funcPointer clickFunction);
+	using funcPointer = void(*)();
+	Button(std::string backgroundImage, std::string title, funcPointer clickFunction);
+	Button(Button& obj, std::string title, funcPointer clickFunction);
 	void click();
 	static void loadSounds(std::string clickSound, std::string hoverSound);
 private:
@@ -16,6 +17,7 @@ private:
 	static sf::SoundBuffer hoverSoundBuffer;
 	static sf::Sound hoverSound;
 
+	void load(std::string title, funcPointer clickFunction);
 	funcPointer clickFunction;
 	std::string title;
 };

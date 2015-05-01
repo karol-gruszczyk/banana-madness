@@ -1,19 +1,23 @@
 #pragma once
 
 #include <vector>
+#include <memory>
 #include <SFML/Audio.hpp>
-#include "Drawable.h"
+#include "Header.h"
 #include "Button.h"
 
 class Menu
 {
 public:
-	Menu(std::string backgroundImagePath);
-	void render();
+	Menu(std::string backgroundImagePath, std::string buttonImage);
+	void render(BananaMadness::GameState& gameState);
+
 private:
+	using ButtonArray = std::vector < std::unique_ptr<Button> > ;
+
 	sf::Music musicHandle;
-	Drawable* backgroundImage;
-	std::vector<Button*> mainMenuButtons;
-	std::vector<Button*> playMenuButtons;
+	Drawable backgroundImage;
+	ButtonArray mainMenuButtons;
+	ButtonArray playMenuButtons;
 };
 

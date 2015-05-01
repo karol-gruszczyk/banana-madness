@@ -1,14 +1,15 @@
 #pragma once
 
 #include <SFML/Audio.hpp>
-#include "Drawable.h"
+#include "exceptions/FileLoadException.h"
+#include "Header.h"
 
 class Intro
 {
 public:
 	Intro(std::string filename);
 
-	bool render(sf::RenderWindow& windowHandle);
+	void render(BananaMadness::GameState& gameState);
 private:
 	sf::Music musicHandle;
 	bool musicPlayed;

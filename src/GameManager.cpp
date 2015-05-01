@@ -7,8 +7,9 @@ GameManager::GameManager(sf::Vector2u resolution, bool fullscreen)
 						WINDOW_TITLE, 
 						fullscreen ? sf::Style::Fullscreen : sf::Style::Default);
 	Drawable::windowHandle = &windowHandle;
-	gameState = GameState::IN_INTRO;
-	intro = new Intro("data/sound/intro.wav");
+	gameState = INITIAL_GAME_STATE;
+	intro = new Intro(INTRO_MUSIC);
+	menu = new Menu(MENU_BACKGROUND, BUTTON_IMAGE);
 }
 
 GameManager::~GameManager()
@@ -41,17 +42,17 @@ void GameManager::renderGameState()
 {
 	switch (gameState)
 	{
-	case IN_INTRO:
-		if (intro->render(windowHandle))
-			gameState = GameManager::GameState::IN_MENU;
+	case BananaMadness::GameState::IN_INTRO:
+		intro->render(gameState);
 		break;
-	case LOADING:
+	case BananaMadness::GameState::LOADING:
 		break;
-	case IN_MENU:
+	case BananaMadness::GameState::IN_MENU:
+		menu->render(gameState);
 		break;
-	case IN_GAME:
+	case BananaMadness::GameState::IN_GAME:
 		break;
-	case PAUSED:
+	case BananaMadness::GameState::PAUSED:
 		break;
 	}
 }

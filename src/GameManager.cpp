@@ -7,6 +7,8 @@ GameManager::GameManager(sf::Vector2u resolution, bool fullscreen)
 						WINDOW_TITLE, 
 						fullscreen ? sf::Style::Fullscreen : sf::Style::Default);
 	Drawable::windowHandle = &windowHandle;
+	gameState = GameState::IN_INTRO;
+	intro = new Intro("data/sound/intro.wav");
 }
 
 GameManager::~GameManager()
@@ -26,11 +28,30 @@ void GameManager::pollEvents()
 void GameManager::render()
 {
 	windowHandle.clear();
-	//rendering items
+	renderGameState();
 	windowHandle.display();
 }
 
 bool GameManager::isRunning()
 {
 	return windowHandle.isOpen();
+}
+
+void GameManager::renderGameState()
+{
+	switch (gameState)
+	{
+	case IN_INTRO:
+		if (intro->render(windowHandle))
+			gameState = GameManager::GameState::IN_MENU;
+		break;
+	case LOADING:
+		break;
+	case IN_MENU:
+		break;
+	case IN_GAME:
+		break;
+	case PAUSED:
+		break;
+	}
 }

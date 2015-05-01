@@ -15,8 +15,9 @@ public:
 	void render();
 	void setPosition(sf::Vector2u position);
 	void setSize(sf::Vector2u size = { 0, 0 });
-private:
+protected:
 	static sf::RenderWindow* windowHandle;
+private:
 	sf::Texture textureHandle;
 	sf::Sprite spriteHandle;
 };

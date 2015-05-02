@@ -4,7 +4,7 @@ sf::RenderWindow* Drawable::windowHandle;
 
 Drawable::Drawable(Drawable& obj, sf::Vector2u position /* = { 0, 0 } */ )
 {
-	textureHandle = std::shared_ptr<sf::Texture>(obj.textureHandle);
+	textureHandle = obj.textureHandle;
 	spriteHandle.setTexture(*textureHandle);
 	setPosition(position);
 }
@@ -16,7 +16,7 @@ Drawable::Drawable(std::string path, sf::Vector2u position /* = { 0, 0 } */ )
 
 void Drawable::load(std::string path, sf::Vector2u position /* = { 0, 0 } */ )
 {
-	textureHandle = std::shared_ptr<sf::Texture> (new sf::Texture);
+	textureHandle = std::make_shared<sf::Texture>();
 	if (!textureHandle->loadFromFile(path))
 		throw FileLoadException(path);
 	textureHandle->setSmooth(true);

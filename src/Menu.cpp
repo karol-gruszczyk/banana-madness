@@ -8,14 +8,13 @@ Menu::Menu(std::string backgroundImagePath, std::string buttonImage)
 	backgroundImage.setSize();
 
 	mainMenuButtons.push_back(std::unique_ptr<Button>(new Button(buttonImage, "PLAY", nullptr)));
-	auto& button = mainMenuButtons[0];
- 	mainMenuButtons.push_back(std::unique_ptr<Button>(new Button(*button, "HELP", nullptr)));
-//	The application crashes with an "memory access violation" exception after creating a third instance of button texture
-// 	mainMenuButtons.push_back(std::unique_ptr<Button>(new Button(*button, "QUIT", nullptr)));
+	auto& refBtn = *mainMenuButtons[0];
+	mainMenuButtons.push_back(std::unique_ptr<Button>(new Button(refBtn, "HELP", nullptr)));
+	mainMenuButtons.push_back(std::unique_ptr<Button>(new Button(refBtn, "QUIT", nullptr)));
 
-// 	playMenuButtons.push_back(std::unique_ptr<Button>(new Button(*button, "NEW GAME", nullptr)));
-// 	playMenuButtons.push_back(std::unique_ptr<Button>(new Button(*button, "LOAD GAME", nullptr)));
-// 	playMenuButtons.push_back(std::unique_ptr<Button>(new Button(*button, "BACK", nullptr)));
+	playMenuButtons.push_back(std::unique_ptr<Button>(new Button(refBtn, "NEW GAME", nullptr)));
+	playMenuButtons.push_back(std::unique_ptr<Button>(new Button(refBtn, "LOAD GAME", nullptr)));
+	playMenuButtons.push_back(std::unique_ptr<Button>(new Button(refBtn, "BACK", nullptr)));
 }
 
 void Menu::render(BananaMadness::GameState& gameState)

@@ -9,7 +9,7 @@ class Intro
 public:
 	Intro(std::string filename);
 
-	void render(BananaMadness::GameState& gameState);
+	void runFrame(BananaMadness::GameState& gameState, std::vector<unsigned> pressedKeys);
 private:
 	sf::Music musicHandle;
 	bool musicPlayed;

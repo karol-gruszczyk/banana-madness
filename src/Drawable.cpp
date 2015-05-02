@@ -2,7 +2,8 @@
 
 sf::RenderWindow* Drawable::windowHandle;
 
-Drawable::Drawable(Drawable& obj, sf::Vector2u position /* = { 0, 0 } */ )
+Drawable::Drawable(Drawable& obj, sf::Vector2u position /* = { 0, 0 } */)
+	: size(obj.textureHandle->getSize())
 {
 	textureHandle = obj.textureHandle;
 	spriteHandle.setTexture(*textureHandle);
@@ -22,6 +23,7 @@ void Drawable::load(std::string path, sf::Vector2u position /* = { 0, 0 } */ )
 	textureHandle->setSmooth(true);
 	spriteHandle.setTexture(*textureHandle);
 	setPosition(position);
+	size = textureHandle->getSize();
 }
 
 void Drawable::render()

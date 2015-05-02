@@ -7,7 +7,7 @@ Intro::Intro(std::string introSoundFilename)
 		throw FileLoadException(introSoundFilename);
 }
 
-void Intro::render(BananaMadness::GameState& gameState)
+void Intro::runFrame(BananaMadness::GameState& gameState, std::vector<unsigned> pressedKeys)
 {
 	if (musicHandle.getStatus() != sf::Sound::Status::Playing)
 	{
@@ -15,6 +15,7 @@ void Intro::render(BananaMadness::GameState& gameState)
 		{
 			gameState = BananaMadness::GameState::IN_MENU;
 			musicPlayed = false;
+			return;
 		}
 		musicHandle.play();
 		musicPlayed = true;

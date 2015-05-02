@@ -12,10 +12,8 @@ class GameManager
 {
 public:
 	GameManager(sf::Vector2u resolution, bool fullscreen);
-	~GameManager();
 
-	void pollEvents();
-	void render();
+	void runFrame();
 	bool isRunning();
 private:
 	void renderGameState();

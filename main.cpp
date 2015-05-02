@@ -4,11 +4,10 @@
 int main()
 {
 	try {
-		GameManager game({ 800, 600 }, false);
+		GameManager game({ 1280, 720 }, false);
 		while (game.isRunning())
 		{
-			game.pollEvents();
-			game.render();
+			game.runFrame();
 		}
 	} catch (std::exception& e) {
 		// error handling is done outside the game source files, to easily rewrite the game to another OS

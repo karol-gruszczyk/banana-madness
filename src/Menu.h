@@ -9,7 +9,7 @@
 class Menu
 {
 public:
-	Menu(std::string backgroundImagePath, std::string buttonImage, std::string selectedImage, sf::Vector2u resolution);
+	Menu(std::string backgroundImagePath, std::string menuMusic, std::string buttonImage, std::string selectedImage, sf::Vector2u resolution);
 	void runFrame(BananaMadness::GameState& gameState, std::vector<unsigned> pressedKeys);
 	void handleInput(BananaMadness::GameState& gameState, std::vector<unsigned> pressedKeys);
 private:

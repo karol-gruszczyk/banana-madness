@@ -1,18 +1,29 @@
 #include "Menu.h"
 
-Menu::Menu(std::string backgroundImagePath, std::string buttonImage, std::string selectedImage, sf::Vector2u resolution)
+Menu::Menu(std::string backgroundImagePath,
+	std::string menuMusicPath,
+	std::string buttonImagePath,
+	std::string selectedImagePath,
+	sf::Vector2u resolution)
 {
 	backgroundImage.load(backgroundImagePath);
 	backgroundImage.setSize();
 
-	this->selectedImage.load(selectedImage);
+	if (!musicHandle.openFromFile(menuMusicPath))
+		throw FileLoadException(menuMusicPath);
+	musicHandle.setLoop(true);
 
-	setupButtons(buttonImage, resolution);
+	selectedImage.load(selectedImagePath);
+
+	setupButtons(buttonImagePath, resolution);
 	selectButton(MAIN_MENU, 0);
 }
 
 void Menu::runFrame(BananaMadness::GameState& gameState, std::vector<unsigned> pressedKeys)
 {
+	if (musicHandle.getStatus() != sf::Music::Status::Playing)
+		musicHandle.play();
+
 	handleInput(gameState, pressedKeys);
 	if (gameState == BananaMadness::GameState::IN_MENU)
 	{

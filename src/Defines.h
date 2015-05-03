@@ -8,8 +8,9 @@
 #endif
 
 #define WINDOW_TITLE "Banana Madness: a journey into insanity"
-#define INTRO_MUSIC "data/sound/intro.wav"
+#define INTRO_VIDEO "data/video/intro.avi"
 #define MENU_BACKGROUND "data/img/menu.png"
+#define MENU_MUSIC "data/music/menu.wav"
 #define BUTTON_IMAGE "data/img/button.png"
 #define BUTTON_SELECTED_IMAGE "data/img/monkey.png"
 #define BUTTON_FONT "data/cakenom.ttf"

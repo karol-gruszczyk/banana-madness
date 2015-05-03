@@ -1,17 +1,15 @@
 #pragma once
 
-#include <SFML/Audio.hpp>
-#include "exceptions/FileLoadException.h"
-#include "Header.h"
+#include "Video.h"
 
 class Intro
 {
 public:
-	Intro(std::string filename);
+	Intro(std::string videoPath);
 
 	void runFrame(BananaMadness::GameState& gameState, std::vector<unsigned> pressedKeys);
 private:
-	sf::Music musicHandle;
-	bool musicPlayed;
+	Video videoHandle;
+	bool videoPlayed;
 };
 

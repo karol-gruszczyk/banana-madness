@@ -8,8 +8,8 @@ GameManager::GameManager(sf::Vector2u resolution, bool fullscreen)
 						fullscreen ? sf::Style::Fullscreen : sf::Style::Close);
 	Drawable::windowHandle = &windowHandle;
 	gameState = INITIAL_GAME_STATE;
-	intro = new Intro(INTRO_MUSIC);
-	menu = new Menu(MENU_BACKGROUND, BUTTON_IMAGE, BUTTON_SELECTED_IMAGE, resolution);
+	intro = new Intro(INTRO_VIDEO);
+	menu = new Menu(MENU_BACKGROUND, MENU_MUSIC, BUTTON_IMAGE, BUTTON_SELECTED_IMAGE, resolution);
 }
 
 void GameManager::runFrame()

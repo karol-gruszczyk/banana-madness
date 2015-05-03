@@ -1,23 +1,29 @@
 #include "Intro.h"
 
 
-Intro::Intro(std::string introSoundFilename)
+Intro::Intro(std::string videoPath)
 {
-	if (!musicHandle.openFromFile(introSoundFilename))
-		throw FileLoadException(introSoundFilename);
+	videoHandle.load(videoPath);
 }
 
 void Intro::runFrame(BananaMadness::GameState& gameState, std::vector<unsigned> pressedKeys)
 {
-	if (musicHandle.getStatus() != sf::Sound::Status::Playing)
+	if (pressedKeys.size())
 	{
-		if (musicPlayed)
+		gameState = BananaMadness::GameState::IN_MENU;
+		videoHandle.stop();
+	}
+
+	videoHandle.render();
+	if (!videoHandle.isPlaying())
+	{
+		if (videoPlayed)
 		{
 			gameState = BananaMadness::GameState::IN_MENU;
-			musicPlayed = false;
+			videoPlayed = false;
 			return;
 		}
-		musicHandle.play();
-		musicPlayed = true;
+		videoPlayed = true;
+		videoHandle.play();
 	}
 }

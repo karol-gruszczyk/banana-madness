@@ -1,10 +1,10 @@
 #include "Button.h"
 
-sf::Font Button::fontHandle;
-sf::Sound Button::hoverSound;
-sf::SoundBuffer Button::hoverSoundBuffer;
-sf::Sound Button::clickSound;
-sf::SoundBuffer Button::clickSoundBuffer;
+std::unique_ptr<sf::Font> Button::fontHandle;
+std::unique_ptr<sf::Sound> Button::hoverSound;
+std::unique_ptr<sf::SoundBuffer> Button::hoverSoundBuffer;
+std::unique_ptr<sf::Sound> Button::clickSound;
+std::unique_ptr<sf::SoundBuffer> Button::clickSoundBuffer;
 
 Button::Button(std::string backgroundImage, std::string title, sf::Vector2u position /* = {} */ )
 	: Drawable(backgroundImage, position)
@@ -20,29 +20,49 @@ Button::Button(Button& obj, std::string title, sf::Vector2u position /* = {} */ 
 
 void Button::load(std::string title)
 {
-	text.setFont(fontHandle);
+	text.setFont(*fontHandle);
 	text.setString(title);
 	text.setColor(sf::Color::Black);
 	text.setCharacterSize(50);
 	setPosition(this->getPosition());
 }
 
-void Button::loadStatics(std::string clickSound, std::string hoverSound, std::string font)
+void Button::loadStatics(std::string clickSoundPath, std::string hoverSoundPath, std::string fontPath)
 {
-	if (!fontHandle.loadFromFile(font))
-		throw FileLoadException(font);
+	fontHandle = std::make_unique<sf::Font>();
+	if (!fontHandle->loadFromFile(fontPath))
+		throw FileLoadException(fontPath);
+
+	clickSoundBuffer = std::make_unique<sf::SoundBuffer>();
+	if (!clickSoundBuffer->loadFromFile(clickSoundPath))
+		throw FileLoadException(clickSoundPath);
+	clickSound = std::make_unique<sf::Sound>(*clickSoundBuffer);
+ 
+	hoverSoundBuffer = std::make_unique<sf::SoundBuffer>();
+	if (!hoverSoundBuffer->loadFromFile(hoverSoundPath))
+		throw FileLoadException(hoverSoundPath);
+	hoverSound = std::make_unique<sf::Sound>(*hoverSoundBuffer);
 }
 
 void Button::render()
 {
 	Drawable::render();
-	// for some reason the following line is causing an exception on the closing bracket of main()
-//	windowHandle->draw(text);
+	windowHandle->draw(text);
 }
 
 void Button::setPosition(sf::Vector2u position)
 {
 	Drawable::setPosition(position);
 	auto& btnPos = (sf::Vector2f)this->getPosition() + sf::Vector2f(this->getSize().x / 2.f, 0.f);
-//	text.setPosition({ btnPos.x - text.getLocalBounds().width / 2.f, btnPos.y });
+	text.setPosition({ btnPos.x - text.getLocalBounds().width / 2.f, btnPos.y });
+}
+
+void Button::playHoverSound()
+{
+	hoverSound->play();
+}
+
+void Button::playClickSound()
+{
+	clickSound->play();
 }

@@ -39,23 +39,28 @@ void Menu::runFrame(BananaMadness::GameState& gameState, std::vector<unsigned> p
 void Menu::setupButtons(std::string buttonImage, sf::Vector2u resolution)
 {
 	Button::loadStatics(BUTTON_CLICK_SOUND, BUTTON_HOVER_SOUND, BUTTON_FONT);
-	buttons[0].push_back(std::unique_ptr<Button>(new Button(buttonImage, "PLAY")));
-	auto& refBtn = *buttons[0][0];
+	buttons[0].push_back(std::make_unique<Button>(buttonImage, "PLAY"));
+	auto& refBtn = *buttons[0][0]; // only the background image will be copied from the reference
+
+	buttons[0].push_back(std::make_unique<Button>(refBtn, "HELP"));
+	buttons[0].push_back(std::make_unique<Button>(refBtn, "QUIT"));
+
+	buttons[1].push_back(std::make_unique<Button>(refBtn, "NEW GAME"));
+	buttons[1].push_back(std::make_unique<Button>(refBtn, "LOAD GAME"));
+	buttons[1].push_back(std::make_unique<Button>(refBtn, "BACK"));
+
+	buttons[2].push_back(std::make_unique<Button>(refBtn, "RESUME"));
+	buttons[2].push_back(std::make_unique<Button>(refBtn, "TO MENU"));
+	buttons[2].push_back(std::make_unique<Button>(refBtn, "QUIT"));
+
 	unsigned x = unsigned(resolution.x / 2.f - refBtn.getSize().x / 2.f);
-	unsigned y = unsigned(resolution.y / 2.f);
-	auto xy = [](unsigned x, unsigned y, Button btn, float off) ->sf::Vector2u { return{ x, unsigned(y - off * btn.getSize().y) }; };
-	refBtn.setPosition(xy(x, y, refBtn, 1.6f));
-
-	buttons[0].push_back(std::unique_ptr<Button>(new Button(refBtn, "HELP", xy(x, y, refBtn, .5f))));
-	buttons[0].push_back(std::unique_ptr<Button>(new Button(refBtn, "QUIT", xy(x, y, refBtn, -.6f))));
-
-	buttons[1].push_back(std::unique_ptr<Button>(new Button(refBtn, "NEW GAME", xy(x, y, refBtn, 1.6f))));
-	buttons[1].push_back(std::unique_ptr<Button>(new Button(refBtn, "LOAD GAME", xy(x, y, refBtn, .5f))));
-	buttons[1].push_back(std::unique_ptr<Button>(new Button(refBtn, "BACK", xy(x, y, refBtn, -.6f))));
-
-	buttons[2].push_back(std::unique_ptr<Button>(new Button(refBtn, "RESUME", xy(x, y, refBtn, 1.6f))));
-	buttons[2].push_back(std::unique_ptr<Button>(new Button(refBtn, "TO MENU", xy(x, y, refBtn, .5f))));
-	buttons[2].push_back(std::unique_ptr<Button>(new Button(refBtn, "QUIT", xy(x, y, refBtn, -.6f))));
+	unsigned y_tmp = unsigned(resolution.y / 2.f);
+	for (auto& sub_menu : buttons)
+		for (unsigned i = 0; i < sub_menu.size(); i++)
+		{
+			float offset = sub_menu.size() / 2.f - i * 1.1f;
+			sub_menu[i]->setPosition({ x, unsigned(y_tmp - offset * refBtn.getSize().y) });
+		}
 }
 
 void Menu::selectButton(MenuState state, unsigned buttonIndex)
@@ -92,9 +97,11 @@ void Menu::handleInput(BananaMadness::GameState& gameState, std::vector<unsigned
 			}
 			break;
 		case sf::Keyboard::Up:
+			Button::playHoverSound();
 			selectButton(selectedMenu, selectedButton == 0 ? buttons[selectedMenu].size() - 1 : selectedButton - 1);
 			break;
 		case sf::Keyboard::Down:
+			Button::playHoverSound();
 			selectButton(selectedMenu, selectedButton == buttons[selectedMenu].size() - 1 ? 0 : selectedButton + 1);
 			break;
 		}
@@ -126,6 +133,7 @@ void Menu::clickButton(BananaMadness::GameState& gameState)
 		case 1: // load game
 			break;
 		case 2: // back
+			selectButton(MAIN_MENU, 0);
 			break;
 		}
 		break;
@@ -141,4 +149,5 @@ void Menu::clickButton(BananaMadness::GameState& gameState)
 		}
 		break;
 	}
+	Button::playClickSound();
 }

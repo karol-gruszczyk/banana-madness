@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Defines.h"
-#include "Header.h"
 #include "Drawable.h"
 #include "Intro.h"
 #include "Menu.h"

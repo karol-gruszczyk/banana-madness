@@ -1,20 +1,31 @@
 #include "Button.h"
 
-std::unique_ptr<sf::Font> Button::fontHandle;
-std::unique_ptr<sf::Sound> Button::hoverSound;
-std::unique_ptr<sf::SoundBuffer> Button::hoverSoundBuffer;
-std::unique_ptr<sf::Sound> Button::clickSound;
-std::unique_ptr<sf::SoundBuffer> Button::clickSoundBuffer;
-
-Button::Button(std::string backgroundImage, std::string title, sf::Vector2u position /* = {} */ )
+Button::Button(std::string backgroundImage, std::string hoverSoundPath, std::string clickSoundPath,
+	std::string fontPath, std::string title, sf::Vector2u position /* = */ )
 	: Drawable(backgroundImage, position)
 {
+	fontHandle = std::make_shared<sf::Font>();
+	if (!fontHandle->loadFromFile(fontPath))
+		throw FileLoadException(fontPath);
+
+	clickSoundBuffer = std::make_shared<sf::SoundBuffer>();
+	if (!clickSoundBuffer->loadFromFile(clickSoundPath))
+		throw FileLoadException(clickSoundPath);
+	clickSound = std::make_shared<sf::Sound>(*clickSoundBuffer);
+
+	hoverSoundBuffer = std::make_shared<sf::SoundBuffer>();
+	if (!hoverSoundBuffer->loadFromFile(hoverSoundPath))
+		throw FileLoadException(hoverSoundPath);
+	hoverSound = std::make_shared<sf::Sound>(*hoverSoundBuffer);
 	load(title);
 }
 
 Button::Button(Button& obj, std::string title, sf::Vector2u position /* = {} */ )
 	: Drawable(obj, position)
 {
+	fontHandle = obj.fontHandle;
+	hoverSound = obj.hoverSound;
+	clickSound = obj.clickSound;
 	load(title);
 }
 
@@ -25,23 +36,6 @@ void Button::load(std::string title)
 	text.setColor(sf::Color::Black);
 	text.setCharacterSize(50);
 	setPosition(this->getPosition());
-}
-
-void Button::loadStatics(std::string clickSoundPath, std::string hoverSoundPath, std::string fontPath)
-{
-	fontHandle = std::make_unique<sf::Font>();
-	if (!fontHandle->loadFromFile(fontPath))
-		throw FileLoadException(fontPath);
-
-	clickSoundBuffer = std::make_unique<sf::SoundBuffer>();
-	if (!clickSoundBuffer->loadFromFile(clickSoundPath))
-		throw FileLoadException(clickSoundPath);
-	clickSound = std::make_unique<sf::Sound>(*clickSoundBuffer);
- 
-	hoverSoundBuffer = std::make_unique<sf::SoundBuffer>();
-	if (!hoverSoundBuffer->loadFromFile(hoverSoundPath))
-		throw FileLoadException(hoverSoundPath);
-	hoverSound = std::make_unique<sf::Sound>(*hoverSoundBuffer);
 }
 
 void Button::render()

@@ -21,8 +21,8 @@ Menu::Menu(std::string backgroundImagePath,
 
 void Menu::runFrame(BananaMadness::GameState& gameState, std::vector<unsigned> pressedKeys)
 {
-	if (musicHandle.getStatus() != sf::Music::Status::Playing)
-		musicHandle.play();
+// 	if (musicHandle.getStatus() != sf::Music::Status::Playing)
+// 		musicHandle.play();
 
 	handleInput(gameState, pressedKeys);
 	if (gameState == BananaMadness::GameState::IN_MENU)
@@ -38,8 +38,7 @@ void Menu::runFrame(BananaMadness::GameState& gameState, std::vector<unsigned> p
 
 void Menu::setupButtons(std::string buttonImage, sf::Vector2u resolution)
 {
-	Button::loadStatics(BUTTON_CLICK_SOUND, BUTTON_HOVER_SOUND, BUTTON_FONT);
-	buttons[0].push_back(std::make_unique<Button>(buttonImage, "PLAY"));
+	buttons[0].push_back(std::make_unique<Button>(buttonImage, BUTTON_HOVER_SOUND, BUTTON_CLICK_SOUND, BUTTON_FONT, "PLAY"));
 	auto& refBtn = *buttons[0][0]; // only the background image will be copied from the reference
 
 	buttons[0].push_back(std::make_unique<Button>(refBtn, "HELP"));
@@ -65,6 +64,7 @@ void Menu::setupButtons(std::string buttonImage, sf::Vector2u resolution)
 
 void Menu::selectButton(MenuState state, unsigned buttonIndex)
 {
+	buttons[selectedMenu][selectedButton]->playHoverSound();
 	selectedMenu = state;
 	selectedButton = buttonIndex;
 	auto& imgSize = selectedImage.getSize();
@@ -97,11 +97,9 @@ void Menu::handleInput(BananaMadness::GameState& gameState, std::vector<unsigned
 			}
 			break;
 		case sf::Keyboard::Up:
-			Button::playHoverSound();
 			selectButton(selectedMenu, selectedButton == 0 ? buttons[selectedMenu].size() - 1 : selectedButton - 1);
 			break;
 		case sf::Keyboard::Down:
-			Button::playHoverSound();
 			selectButton(selectedMenu, selectedButton == buttons[selectedMenu].size() - 1 ? 0 : selectedButton + 1);
 			break;
 		}
@@ -149,5 +147,5 @@ void Menu::clickButton(BananaMadness::GameState& gameState)
 		}
 		break;
 	}
-	Button::playClickSound();
+	buttons[selectedMenu][selectedButton]->playClickSound();
 }

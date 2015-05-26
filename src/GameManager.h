@@ -1,10 +1,12 @@
 #pragma once
 
-#include "Defines.h"
-#include "Drawable.h"
-#include "Intro.h"
-#include "Menu.h"
 #include <SFML/Graphics.hpp>
+
+#include <src/Globals.h>
+#include <src/base/Drawable.h>
+#include <src/menu/Menu.h>
+#include <src/menu/Intro.h>
+#include <src/map/Map.h>
 
 
 class GameManager
@@ -16,10 +18,11 @@ public:
 	bool isRunning();
 private:
 	void renderGameState();
-
+	void closeWindow();
 	sf::RenderWindow windowHandle;
 	BananaMadness::GameState gameState;
- 	Intro* intro;
- 	Menu* menu;
+ 	std::unique_ptr<Intro> intro;
+	std::unique_ptr<Menu> menu;
+	std::unique_ptr<Map> map;
 };
 

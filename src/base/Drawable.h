@@ -4,8 +4,8 @@
 #include <memory>
 #include <SFML/Graphics.hpp>
 
-#include "Defines.h"
-#include "exceptions/FileLoadException.h"
+#include <src/Globals.h>
+#include <src/base/exceptions/FileLoadException.h>
 
 class Drawable
 {

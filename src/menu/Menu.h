@@ -3,7 +3,8 @@
 #include <vector>
 #include <memory>
 #include <SFML/Audio.hpp>
-#include "Button.h"
+
+#include <src/menu/Button.h>
 
 class Menu
 {

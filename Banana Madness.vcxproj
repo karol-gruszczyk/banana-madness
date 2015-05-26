@@ -45,7 +45,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>SFML-2.2\include;sfeMovie\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>SFML-2.2\include;sfeMovie\include;.</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -61,7 +61,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>SFML-2.2\include;sfeMovie\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>SFML-2.2\include;sfeMovie\include;.</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -72,24 +72,30 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="src\Button.cpp" />
-    <ClCompile Include="src\Drawable.cpp" />
+    <ClCompile Include="src\base\Drawable.cpp" />
+    <ClCompile Include="src\base\Video.cpp" />
     <ClCompile Include="src\GameManager.cpp" />
-    <ClCompile Include="src\Intro.cpp" />
-    <ClCompile Include="src\Menu.cpp" />
-    <ClCompile Include="src\Video.cpp" />
+    <ClCompile Include="src\Globals.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\map\blocks\Block.cpp" />
+    <ClCompile Include="src\map\Map.cpp" />
+    <ClCompile Include="src\map\MapParser.cpp" />
+    <ClCompile Include="src\menu\Button.cpp" />
+    <ClCompile Include="src\menu\Intro.cpp" />
+    <ClCompile Include="src\menu\Menu.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Button.h" />
-    <ClInclude Include="src\Defines.h" />
-    <ClInclude Include="src\Drawable.h" />
-    <ClInclude Include="src\exceptions\FileLoadException.h" />
+    <ClInclude Include="src\base\Drawable.h" />
+    <ClInclude Include="src\base\exceptions\FileLoadException.h" />
+    <ClInclude Include="src\base\Video.h" />
+    <ClInclude Include="src\Globals.h" />
     <ClInclude Include="src\GameManager.h" />
-    <ClInclude Include="src\Header.h" />
-    <ClInclude Include="src\Intro.h" />
-    <ClInclude Include="src\Menu.h" />
-    <ClInclude Include="src\Video.h" />
+    <ClInclude Include="src\map\blocks\Block.h" />
+    <ClInclude Include="src\map\Map.h" />
+    <ClInclude Include="src\map\MapParser.h" />
+    <ClInclude Include="src\menu\Button.h" />
+    <ClInclude Include="src\menu\Intro.h" />
+    <ClInclude Include="src\menu\Menu.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

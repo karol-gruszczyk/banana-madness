@@ -8,8 +8,9 @@ GameManager::GameManager(sf::Vector2u resolution, bool fullscreen)
 						fullscreen ? sf::Style::Fullscreen : sf::Style::Close);
 	Drawable::windowHandle = &windowHandle;
 	gameState = INITIAL_GAME_STATE;
-	intro = new Intro(INTRO_VIDEO);
-	menu = new Menu(MENU_BACKGROUND, MENU_MUSIC, BUTTON_IMAGE, BUTTON_SELECTED_IMAGE, resolution);
+	intro = std::make_unique<Intro>(INTRO_VIDEO);
+	menu = std::make_unique<Menu>(MENU_BACKGROUND, MENU_MUSIC, BUTTON_IMAGE, BUTTON_SELECTED_IMAGE, resolution);
+	map = std::make_unique<Map>(levels[0]);
 }
 
 void GameManager::runFrame()
@@ -32,7 +33,7 @@ void GameManager::renderGameState()
 	while (windowHandle.pollEvent(event))
 	{
 		if (event.type == sf::Event::Closed)
-			windowHandle.close();
+			closeWindow();
 		else if (event.type == sf::Event::KeyPressed)
 			pressedKeys.push_back(event.key.code);
 		else if (event.type == sf::Event::KeyReleased)
@@ -57,4 +58,11 @@ void GameManager::renderGameState()
 		menu->runFrame(gameState, releasedKeys);
 		break;
 	}
+}
+
+void GameManager::closeWindow()
+{
+	if (gameState == BananaMadness::GameState::IN_INTRO)
+		intro->stopVideo();
+	windowHandle.close();
 }

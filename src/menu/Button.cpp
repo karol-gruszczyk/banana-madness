@@ -20,12 +20,12 @@ Button::Button(std::string backgroundImage, std::string hoverSoundPath, std::str
 	load(title);
 }
 
-Button::Button(Button& obj, std::string title, sf::Vector2u position /* = {} */ )
-	: Drawable(obj, position)
+Button::Button(Button& btnRef, std::string title, sf::Vector2u position /* = {} */ )
+	: Drawable(btnRef, position)
 {
-	fontHandle = obj.fontHandle;
-	hoverSound = obj.hoverSound;
-	clickSound = obj.clickSound;
+	fontHandle = btnRef.fontHandle;
+	hoverSound = btnRef.hoverSound;
+	clickSound = btnRef.clickSound;
 	load(title);
 }
 

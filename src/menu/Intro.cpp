@@ -11,7 +11,7 @@ void Intro::runFrame(BananaMadness::GameState& gameState, std::vector<unsigned> 
 	if (pressedKeys.size())
 	{
 		gameState = BananaMadness::GameState::IN_MENU;
-		videoHandle.stop();
+		stopVideo();
 	}
 
 	videoHandle.render();
@@ -26,4 +26,9 @@ void Intro::runFrame(BananaMadness::GameState& gameState, std::vector<unsigned> 
 		videoPlayed = true;
 		videoHandle.play();
 	}
+}
+
+void Intro::stopVideo()
+{
+	videoHandle.stop();
 }

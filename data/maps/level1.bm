@@ -4,11 +4,10 @@ brick=data/img/blocks/brick.png
 secret=data/img/blocks/secret.png
 ground=data/img/blocks/brick.png
 !filepaths
-mapproperties
-background_img=mapbg
-height=6
-width=
-!mapproperties
+mapattributes
+bg_img=data/img/map_bg.png
+bg_music=data/music/level1.wav
+!mapattributes
 blocks
 G=(img=brick,type=normal)
 !blocks
@@ -16,10 +15,10 @@ enemies
 
 !enemies
 map
-GG____
-GG____
-GG____
-GG____
+GGGGGG
+GG__G_
+GG_G__
+GGG___
 GG____
 ______
 ______

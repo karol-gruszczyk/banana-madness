@@ -4,7 +4,7 @@
 int main()
 {
 	try {
-		GameManager game({ 1280, 720 }, false);
+		GameManager game({ 1280, 700 }, false);
 		while (game.isRunning())
 		{
 			game.runFrame();

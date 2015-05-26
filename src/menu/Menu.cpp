@@ -4,8 +4,11 @@ Menu::Menu(std::string backgroundImagePath,
 	std::string menuMusicPath,
 	std::string buttonImagePath,
 	std::string selectedImagePath,
-	sf::Vector2u resolution)
+	std::string playSoundPath,
+	sf::RenderWindow& windowHandle) : windowHandle(&windowHandle)
 {
+	menuView = sf::View(sf::FloatRect(0.f, 0.f, (float)windowHandle.getSize().x, (float)windowHandle.getSize().y));
+
 	backgroundImage.load(backgroundImagePath);
 	backgroundImage.setSize();
 
@@ -15,16 +18,21 @@ Menu::Menu(std::string backgroundImagePath,
 
 	selectedImage.load(selectedImagePath);
 
-	setupButtons(buttonImagePath, resolution);
+	setupButtons(buttonImagePath, windowHandle.getSize());
 	selectButton(MAIN_MENU, 0);
+
+	if (!playSoundBuffer.loadFromFile(playSoundPath))
+		throw FileLoadException(playSoundPath);
+	playSound.setBuffer(playSoundBuffer);
 }
 
-void Menu::runFrame(BananaMadness::GameState& gameState, std::vector<unsigned> pressedKeys)
+void Menu::runFrame(BananaMadness::GameState& gameState, std::vector<unsigned> pressedKeys, Map& mapHandle)
 {
-// 	if (musicHandle.getStatus() != sf::Music::Status::Playing)
-// 		musicHandle.play();
+	windowHandle->setView(menuView);
+	if (musicHandle.getStatus() != sf::Music::Status::Playing)
+		musicHandle.play();
 
-	handleInput(gameState, pressedKeys);
+	handleInput(gameState, pressedKeys, mapHandle);
 	if (gameState == BananaMadness::GameState::IN_MENU)
 	{
 		backgroundImage.render();
@@ -73,14 +81,14 @@ void Menu::selectButton(MenuState state, unsigned buttonIndex)
 	selectedImage.setPosition({ btnPos.x - imgSize.x, unsigned(btnPos.y - btnSize.y / 2.f) });
 }
 
-void Menu::handleInput(BananaMadness::GameState& gameState, std::vector<unsigned> pressedKeys)
+void Menu::handleInput(BananaMadness::GameState& gameState, std::vector<unsigned> pressedKeys, Map& mapHandle)
 {
 	for (auto& key : pressedKeys)
 	{
 		switch (key)
 		{
 		case sf::Keyboard::Return:
-			clickButton(gameState);
+			clickButton(gameState, mapHandle);
 			break;
 		case sf::Keyboard::Escape:
 			switch (selectedMenu)
@@ -106,7 +114,7 @@ void Menu::handleInput(BananaMadness::GameState& gameState, std::vector<unsigned
 	}
 }
 
-void Menu::clickButton(BananaMadness::GameState& gameState)
+void Menu::clickButton(BananaMadness::GameState& gameState, Map& mapHandle)
 {
 	switch (selectedMenu)
 	{
@@ -127,6 +135,11 @@ void Menu::clickButton(BananaMadness::GameState& gameState)
 		switch (selectedButton)
 		{
 		case 0: // new game
+			musicHandle.stop();
+			playSound.play();
+			mapHandle.loadMap(levels[0]);
+			playSound.stop();
+			gameState = BananaMadness::IN_GAME;
 			break;
 		case 1: // load game
 			break;

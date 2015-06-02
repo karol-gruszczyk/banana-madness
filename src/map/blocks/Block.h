@@ -11,7 +11,9 @@ public:
 	void load(std::string imagePath, sf::Vector2u mapPosition = {});
 	sf::Vector2u getMapPosition();
 	void setMapPosition(sf::Vector2u mapPostion);
+	bool isCollidable();
 private:
 	sf::Vector2u mapPosition;
+	bool collidable;
 };
 

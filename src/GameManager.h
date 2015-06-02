@@ -6,7 +6,7 @@
 #include <src/base/Drawable.h>
 #include <src/menu/Menu.h>
 #include <src/menu/Intro.h>
-#include <src/map/Map.h>
+#include <src/map/Level.h>
 
 
 class GameManager
@@ -23,6 +23,6 @@ private:
 	BananaMadness::GameState gameState;
  	std::unique_ptr<Intro> intro;
 	std::unique_ptr<Menu> menu;
-	std::unique_ptr<Map> map;
+	std::unique_ptr<Level> map;
 };
 

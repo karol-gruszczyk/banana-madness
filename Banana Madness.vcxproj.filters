@@ -27,9 +27,6 @@
     <ClCompile Include="src\base\Video.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\map\Map.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\map\MapParser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -46,6 +43,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\characters\Character.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\characters\Playable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\map\Level.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -77,10 +83,16 @@
     <ClInclude Include="src\menu\Intro.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\map\Map.h">
+    <ClInclude Include="src\menu\Menu.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\menu\Menu.h">
+    <ClInclude Include="src\characters\Character.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\characters\Playable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\map\Level.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

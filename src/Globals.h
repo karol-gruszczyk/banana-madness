@@ -16,7 +16,6 @@
 #define BUTTON_CLICK_SOUND "data/sound/click.wav"
 #define BUTTON_HOVER_SOUND "data/sound/hover.wav"
 #define PLAY_SOUND "data/sound/play.wav"
-#define LEVEL_0 "data/maps/level1.bm"
 
 namespace BananaMadness
 {

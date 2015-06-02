@@ -12,6 +12,7 @@ void MapParser::parseFile()
 	parseFilePaths(file);
 	parseMapAttributes(file);
 	parseBlocks(file);
+	parseCharacter(file);
 	parseMap(file);
 
 	file.close();
@@ -24,12 +25,17 @@ std::unique_ptr< std::vector < std::vector< std::unique_ptr <Block> > > >& MapPa
 
 std::string MapParser::getBackgroundImagePath()
 {
-	return mapAttributes["bg_img"];
+	return filePaths[mapAttributes["background_image"]];
 }
 
 std::string MapParser::getBackgroundMusicPath()
 {
-	return mapAttributes["bg_music"];
+	return filePaths[mapAttributes["background_music"]];
+}
+
+std::vector<std::string> MapParser::getCharacterSpritePaths()
+{
+	return characterSpritePaths;
 }
 
 void MapParser::parseFilePaths(std::ifstream& file)
@@ -86,19 +92,31 @@ void MapParser::parseEnemies(std::ifstream& file)
 	}
 }
 
+void MapParser::parseCharacter(std::ifstream& file)
+{
+	std::string sprites_str = mapAttributes["player"];
+	sprites_str.erase(std::remove_if(sprites_str.begin(), sprites_str.end(), [](char chr){ return chr == '(' || chr == ')'; }), sprites_str.end());
+	while (sprites_str.find(',') != std::string::npos)
+	{
+		auto tmp = splitString(sprites_str, ",");
+		characterSpritePaths.push_back(filePaths[tmp[0]]);
+		sprites_str = tmp[1];
+	}
+	characterSpritePaths.push_back(filePaths[sprites_str]);
+}
+
 void MapParser::parseMap(std::ifstream& file)
 {
 	auto lines = getLinesFromTag(file, "map");
 	blockArray = std::make_unique<std::vector<std::vector<std::unique_ptr<Block>>>>();
 	blockArray->resize(lines->size());
 	std::map<std::string, Block*> blockInstaces;
-	for (auto& i : *blockArray)
-		i.resize((*lines)[0].size());
 
 	for (unsigned i = 0; i < lines->size(); i++)
 	{
 		for (unsigned j = 0; j < (*lines)[i].size(); j++)
 		{
+			(*blockArray)[i].resize((*lines)[i].size());
 			std::string blockName(1, (*lines)[i][j]);
 			if (blocks.find(blockName) != blocks.end())
 			{

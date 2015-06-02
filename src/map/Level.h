@@ -8,11 +8,13 @@
 #include <src/base/Drawable.h>
 #include <src/map/blocks/Block.h>
 #include <src/map/MapParser.h>
+#include <src/characters/Playable.h>
 
-class Map
+
+class Level
 {
 public:
-	Map(sf::RenderWindow& windowHandle);
+	Level(sf::RenderWindow& windowHandle);
 	void loadMap(std::string mapPath);
 	void runFrame(BananaMadness::GameState& gameState, std::vector<unsigned> pressedKeys, std::vector<unsigned> releasedKeys);
 	operator bool();
@@ -23,5 +25,8 @@ private:
 	std::unique_ptr< std::vector < std::vector< std::unique_ptr <Block> > > > blocks;
 	Drawable backgroundImage;
 	sf::Music musicHandle;
+	Playable player;
+
+	void handleInput(BananaMadness::GameState& gameState, std::vector<unsigned> pressedKeys, std::vector<unsigned> releasedKeys);
 };
 

@@ -2,7 +2,7 @@
 
 sf::RenderWindow* Drawable::windowHandle;
 
-Drawable::Drawable(Drawable& obj, sf::Vector2u position /* = { 0, 0 } */)
+Drawable::Drawable(Drawable& obj, sf::Vector2f position /* = { 0, 0 } */)
 	: size(obj.textureHandle->getSize())
 {
 	textureHandle = obj.textureHandle;
@@ -10,12 +10,12 @@ Drawable::Drawable(Drawable& obj, sf::Vector2u position /* = { 0, 0 } */)
 	setPosition(position);
 }
 
-Drawable::Drawable(std::string path, sf::Vector2u position /* = { 0, 0 } */ )
+Drawable::Drawable(std::string path, sf::Vector2f position /* = { 0, 0 } */ )
 {
 	load(path, position);
 }
 
-void Drawable::load(std::string path, sf::Vector2u position /* = { 0, 0 } */ )
+void Drawable::load(std::string path, sf::Vector2f position /* = { 0, 0 } */ )
 {
 	textureHandle = std::make_shared<sf::Texture>();
 	if (!textureHandle->loadFromFile(path))
@@ -31,14 +31,14 @@ void Drawable::render()
 	windowHandle->draw(spriteHandle);
 }
 
-void Drawable::setPosition(sf::Vector2u position)
+void Drawable::setPosition(sf::Vector2f position)
 {
-	spriteHandle.setPosition((sf::Vector2f)position);
+	spriteHandle.setPosition(position);
 }
 
-sf::Vector2u Drawable::getPosition()
+sf::Vector2f Drawable::getPosition()
 {
-	return (sf::Vector2u)spriteHandle.getPosition();
+	return spriteHandle.getPosition();
 }
 
 void Drawable::setSize(sf::Vector2u size /* = windowSize */)

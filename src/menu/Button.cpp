@@ -1,7 +1,7 @@
 #include "Button.h"
 
 Button::Button(std::string backgroundImage, std::string hoverSoundPath, std::string clickSoundPath,
-	std::string fontPath, std::string title, sf::Vector2u position /* = */ )
+	std::string fontPath, std::string title, sf::Vector2f position /* = */ )
 	: Drawable(backgroundImage, position)
 {
 	fontHandle = std::make_shared<sf::Font>();
@@ -20,7 +20,7 @@ Button::Button(std::string backgroundImage, std::string hoverSoundPath, std::str
 	load(title);
 }
 
-Button::Button(Button& btnRef, std::string title, sf::Vector2u position /* = {} */ )
+Button::Button(Button& btnRef, std::string title, sf::Vector2f position /* = {} */ )
 	: Drawable(btnRef, position)
 {
 	fontHandle = btnRef.fontHandle;
@@ -44,7 +44,7 @@ void Button::render()
 	windowHandle->draw(text);
 }
 
-void Button::setPosition(sf::Vector2u position)
+void Button::setPosition(sf::Vector2f position)
 {
 	Drawable::setPosition(position);
 	auto& btnPos = (sf::Vector2f)this->getPosition() + sf::Vector2f(this->getSize().x / 2.f, 0.f);

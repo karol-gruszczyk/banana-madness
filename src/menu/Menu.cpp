@@ -24,12 +24,15 @@ Menu::Menu(std::string backgroundImagePath,
 	if (!playSoundBuffer.loadFromFile(playSoundPath))
 		throw FileLoadException(playSoundPath);
 	playSound.setBuffer(playSoundBuffer);
+
+	curtain.setSize((sf::Vector2f)windowHandle.getSize());
+	curtain.setFillColor(sf::Color(0, 0, 0, 200));
 }
 
-void Menu::runFrame(BananaMadness::GameState& gameState, std::vector<unsigned> pressedKeys, Map& mapHandle)
+void Menu::runFrame(BananaMadness::GameState& gameState, std::vector<unsigned> pressedKeys, Level& mapHandle)
 {
 	windowHandle->setView(menuView);
-	if (musicHandle.getStatus() != sf::Music::Status::Playing)
+	if (musicHandle.getStatus() != sf::Music::Status::Playing && gameState == BananaMadness::GameState::IN_MENU)
 		musicHandle.play();
 
 	handleInput(gameState, pressedKeys, mapHandle);
@@ -37,6 +40,7 @@ void Menu::runFrame(BananaMadness::GameState& gameState, std::vector<unsigned> p
 	{
 		backgroundImage.render();
 	} else {
+		windowHandle->draw(curtain);
 		selectedMenu = PAUSED_MENU;
 	}
 	selectedImage.render();
@@ -66,7 +70,7 @@ void Menu::setupButtons(std::string buttonImage, sf::Vector2u resolution)
 		for (unsigned i = 0; i < sub_menu.size(); i++)
 		{
 			float offset = sub_menu.size() / 2.f - i * 1.1f;
-			sub_menu[i]->setPosition({ x, unsigned(y_tmp - offset * refBtn.getSize().y) });
+			sub_menu[i]->setPosition({ (float)x, y_tmp - offset * refBtn.getSize().y });
 		}
 }
 
@@ -78,10 +82,10 @@ void Menu::selectButton(MenuState state, unsigned buttonIndex)
 	auto& imgSize = selectedImage.getSize();
 	auto& btnPos = buttons[selectedMenu][selectedButton]->getPosition();
 	auto& btnSize = buttons[selectedMenu][selectedButton]->getSize();
-	selectedImage.setPosition({ btnPos.x - imgSize.x, unsigned(btnPos.y - btnSize.y / 2.f) });
+	selectedImage.setPosition({ (float)btnPos.x - imgSize.x, btnPos.y - btnSize.y / 2.f });
 }
 
-void Menu::handleInput(BananaMadness::GameState& gameState, std::vector<unsigned> pressedKeys, Map& mapHandle)
+void Menu::handleInput(BananaMadness::GameState& gameState, std::vector<unsigned> pressedKeys, Level& mapHandle)
 {
 	for (auto& key : pressedKeys)
 	{
@@ -114,7 +118,7 @@ void Menu::handleInput(BananaMadness::GameState& gameState, std::vector<unsigned
 	}
 }
 
-void Menu::clickButton(BananaMadness::GameState& gameState, Map& mapHandle)
+void Menu::clickButton(BananaMadness::GameState& gameState, Level& mapHandle)
 {
 	switch (selectedMenu)
 	{
@@ -152,10 +156,14 @@ void Menu::clickButton(BananaMadness::GameState& gameState, Map& mapHandle)
 		switch (selectedButton)
 		{
 		case 0: // resume
+			gameState = BananaMadness::GameState::IN_GAME;
 			break;
 		case 1: // to menu
+			gameState = BananaMadness::GameState::IN_MENU;
+			selectButton(Menu::MAIN_MENU, 0);
 			break;
 		case 2: // quit
+			exit(EXIT_SUCCESS);
 			break;
 		}
 		break;

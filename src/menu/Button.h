@@ -8,11 +8,11 @@ class Button : public Drawable
 {
 public:
 	Button(std::string backgroundImage, std::string hoverSoundPath, std::string clickSoundPath,
-		std::string fontPath, std::string title, sf::Vector2u position = {});
-	Button(Button& obj, std::string title, sf::Vector2u position = {});
+		std::string fontPath, std::string title, sf::Vector2f position = {});
+	Button(Button& obj, std::string title, sf::Vector2f position = {});
 
 	void render();
-	void setPosition(sf::Vector2u position);
+	void setPosition(sf::Vector2f position);
 	void playHoverSound();
 	void playClickSound();
 private:

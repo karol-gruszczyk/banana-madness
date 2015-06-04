@@ -2,6 +2,7 @@
 
 #include <fstream>
 #include <memory>
+#include <algorithm>
 
 #include <SFML/Audio.hpp>
 
@@ -17,6 +18,7 @@ public:
 	Level(sf::RenderWindow& windowHandle);
 	void loadMap(std::string mapPath);
 	void runFrame(BananaMadness::GameState& gameState, std::vector<unsigned> pressedKeys, std::vector<unsigned> releasedKeys);
+	void render();
 	operator bool();
 private:
 	sf::RenderWindow* windowHandle;

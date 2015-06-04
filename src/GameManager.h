@@ -23,6 +23,6 @@ private:
 	BananaMadness::GameState gameState;
  	std::unique_ptr<Intro> intro;
 	std::unique_ptr<Menu> menu;
-	std::unique_ptr<Level> map;
+	std::unique_ptr<Level> level;
 };
 

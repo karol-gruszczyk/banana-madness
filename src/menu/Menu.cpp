@@ -41,7 +41,10 @@ void Menu::runFrame(BananaMadness::GameState& gameState, std::vector<unsigned> p
 		backgroundImage.render();
 	} else {
 		windowHandle->draw(curtain);
-		selectedMenu = PAUSED_MENU;
+		if (gameState == BananaMadness::GameState::PAUSED)
+			selectedMenu = PAUSED_MENU;
+		else if (gameState == BananaMadness::GameState::GAME_OVER)
+			selectedMenu = GAME_OVER_MENU;
 	}
 	selectedImage.render();
 	for (auto& btn : buttons[selectedMenu])
@@ -50,19 +53,22 @@ void Menu::runFrame(BananaMadness::GameState& gameState, std::vector<unsigned> p
 
 void Menu::setupButtons(std::string buttonImage, sf::Vector2u resolution)
 {
-	buttons[0].push_back(std::make_unique<Button>(buttonImage, BUTTON_HOVER_SOUND, BUTTON_CLICK_SOUND, BUTTON_FONT, "PLAY"));
+	buttons[MAIN_MENU].push_back(std::make_unique<Button>(buttonImage, BUTTON_HOVER_SOUND, BUTTON_CLICK_SOUND, BUTTON_FONT, "PLAY"));
 	auto& refBtn = *buttons[0][0]; // only the background image will be copied from the reference
+	buttons[MAIN_MENU].push_back(std::make_unique<Button>(refBtn, "HELP"));
+	buttons[MAIN_MENU].push_back(std::make_unique<Button>(refBtn, "QUIT"));
 
-	buttons[0].push_back(std::make_unique<Button>(refBtn, "HELP"));
-	buttons[0].push_back(std::make_unique<Button>(refBtn, "QUIT"));
+	buttons[PLAY_MENU].push_back(std::make_unique<Button>(refBtn, "NEW GAME"));
+	buttons[PLAY_MENU].push_back(std::make_unique<Button>(refBtn, "LOAD GAME"));
+	buttons[PLAY_MENU].push_back(std::make_unique<Button>(refBtn, "BACK"));
 
-	buttons[1].push_back(std::make_unique<Button>(refBtn, "NEW GAME"));
-	buttons[1].push_back(std::make_unique<Button>(refBtn, "LOAD GAME"));
-	buttons[1].push_back(std::make_unique<Button>(refBtn, "BACK"));
+	buttons[PAUSED_MENU].push_back(std::make_unique<Button>(refBtn, "RESUME"));
+	buttons[PAUSED_MENU].push_back(std::make_unique<Button>(refBtn, "TO MENU"));
+	buttons[PAUSED_MENU].push_back(std::make_unique<Button>(refBtn, "QUIT"));
 
-	buttons[2].push_back(std::make_unique<Button>(refBtn, "RESUME"));
-	buttons[2].push_back(std::make_unique<Button>(refBtn, "TO MENU"));
-	buttons[2].push_back(std::make_unique<Button>(refBtn, "QUIT"));
+	buttons[GAME_OVER_MENU].push_back(std::make_unique<Button>(refBtn, "REPLAY"));
+	buttons[GAME_OVER_MENU].push_back(std::make_unique<Button>(refBtn, "TO MENU"));
+	buttons[GAME_OVER_MENU].push_back(std::make_unique<Button>(refBtn, "QUIT"));
 
 	unsigned x = unsigned(resolution.x / 2.f - refBtn.getSize().x / 2.f);
 	unsigned y_tmp = unsigned(resolution.y / 2.f);
@@ -157,6 +163,21 @@ void Menu::clickButton(BananaMadness::GameState& gameState, Level& mapHandle)
 		{
 		case 0: // resume
 			gameState = BananaMadness::GameState::IN_GAME;
+			break;
+		case 1: // to menu
+			gameState = BananaMadness::GameState::IN_MENU;
+			selectButton(Menu::MAIN_MENU, 0);
+			break;
+		case 2: // quit
+			exit(EXIT_SUCCESS);
+			break;
+		}
+		break;
+	case Menu::GAME_OVER_MENU:
+		switch (selectedButton)
+		{
+		case 0: // replay
+			// TODO: reload level
 			break;
 		case 1: // to menu
 			gameState = BananaMadness::GameState::IN_MENU;

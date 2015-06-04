@@ -11,27 +11,30 @@
 class Character
 {
 public:
-	Character() {}
-	Character(std::vector<std::string>& texturePaths, double spriteDelta, sf::Vector2f position = { 0, 0 });
+	Character();
+	Character(std::vector<std::string>& texturePaths, float spriteDelta, sf::Vector2f position = { 0, 0 });
 	Character(Character& instance, sf::Vector2f position = { 0, 0 });
 
-	void load(std::vector<std::string>& texturePaths, double spriteDelta, sf::Vector2f position = { 0, 0 });
+	void load(std::vector<std::string>& texturePaths, float spriteDelta, sf::Vector2f position = { 0, 0 });
 	void render();
 	void setPosition(sf::Vector2f newPos);
+	bool isAlive();
 	sf::Vector2f getPosition();
 	sf::Vector2u getSize();
 protected:
 	static sf::Vector2u getBlockIndices(std::unique_ptr< std::vector < std::vector< std::unique_ptr <Block> > > >& blocks, sf::Vector2f pos);
-	void move(std::unique_ptr< std::vector < std::vector< std::unique_ptr <Block> > > >& blocks, sf::Vector2f deltaPos);
+	bool move(std::unique_ptr< std::vector < std::vector< std::unique_ptr <Block> > > >& blocks, sf::Vector2f deltaPos);
 	void handlePhysics(std::unique_ptr< std::vector < std::vector< std::unique_ptr <Block> > > >& blocks);
-	float speed = 0.f;
+	float speed;
+	float deltaTime;
+	bool alive;
 private:
 	sf::Vector2f position;
 	bool moving;
-	double spriteDelta;
-	double deltaTime;
+	float spriteDelta;
+	float spriteDeltaTime;
 	unsigned currentSprite;
-	std::time_t lastFrameTime;
+	std::clock_t lastFrameTime;
 	std::shared_ptr< std::vector<Drawable> > spriteTextures;
 
 	

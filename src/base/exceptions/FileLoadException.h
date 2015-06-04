@@ -6,5 +6,5 @@
 class FileLoadException : public std::exception
 {
 public:
-	FileLoadException(std::string filename) : std::exception(std::string("File '" + filename + "' does not exist or is corrupted").c_str()) {}
+	FileLoadException(std::string filename) throw() : std::exception(std::string("File '" + filename + "' does not exist or is corrupted").c_str()) {}
 };

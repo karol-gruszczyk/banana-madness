@@ -19,7 +19,7 @@ public:
 	void runFrame(BananaMadness::GameState& gameState, std::vector<unsigned> pressedKeys, Level& mapHandle);
 private:
 	using ButtonArray = std::vector < std::unique_ptr<Button> > ;
-	enum MenuState { MAIN_MENU, PLAY_MENU, PAUSED_MENU };
+	enum MenuState { MAIN_MENU, PLAY_MENU, PAUSED_MENU, GAME_OVER_MENU, LEVEL_CLEARED_MENU, MENU_ITEMS };
 
 	void setupButtons(std::string buttonImage, sf::Vector2u resolution);
 	void handleInput(BananaMadness::GameState& gameState, std::vector<unsigned> pressedKeys, Level& mapHandle);
@@ -36,5 +36,5 @@ private:
 	Drawable backgroundImage;
 	Drawable selectedImage;
 	sf::RectangleShape curtain;
-	ButtonArray buttons[3];
+	ButtonArray buttons[MENU_ITEMS];
 };

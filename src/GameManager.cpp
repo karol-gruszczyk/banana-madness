@@ -11,7 +11,7 @@ GameManager::GameManager(sf::Vector2u resolution, bool fullscreen)
 	gameState = INITIAL_GAME_STATE;
 	intro = std::make_unique<Intro>(INTRO_VIDEO);
 	menu = std::make_unique<Menu>(MENU_BACKGROUND, MENU_MUSIC, BUTTON_IMAGE, BUTTON_SELECTED_IMAGE, PLAY_SOUND, windowHandle);
-	map = std::make_unique<Level>(windowHandle);
+	level = std::make_unique<Level>(windowHandle);
 }
 
 void GameManager::runFrame()
@@ -45,18 +45,19 @@ void GameManager::renderGameState()
 	case BananaMadness::GameState::IN_INTRO:
 		intro->runFrame(gameState, releasedKeys);
 		break;
-	case BananaMadness::GameState::LOADING:
-		// not sure if needed
-		break;
 	case BananaMadness::GameState::IN_MENU:
-		menu->runFrame(gameState, releasedKeys, *map);
+		menu->runFrame(gameState, releasedKeys, *level);
 		break;
 	case BananaMadness::GameState::IN_GAME:
-		map->runFrame(gameState, pressedKeys, releasedKeys);
+		level->runFrame(gameState, pressedKeys, releasedKeys);
 		break;
 	case BananaMadness::GameState::PAUSED:
-		map->runFrame(gameState, pressedKeys, releasedKeys);
-		menu->runFrame(gameState, releasedKeys, *map);
+		level->render();
+		menu->runFrame(gameState, releasedKeys, *level);
+		break;
+	case BananaMadness::GameState::GAME_OVER:
+		level->render();
+		menu->runFrame(gameState, releasedKeys, *level);
 		break;
 	}
 }

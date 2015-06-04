@@ -17,8 +17,12 @@
 #define BUTTON_HOVER_SOUND "data/sound/hover.wav"
 #define PLAY_SOUND "data/sound/play.wav"
 
+#define MAX_CHARACTER_SPEED 500.f
+#define PLAYER_JUMP_SPEED 1500.f
+#define PLAYER_WALK_SPEED 0.5f
+
 namespace BananaMadness
 {
-	enum GameState { IN_INTRO, LOADING, IN_MENU, IN_GAME, PAUSED };
+	enum GameState { IN_INTRO, IN_MENU, IN_GAME, PAUSED, GAME_OVER };
 }
 extern const char* levels[2];

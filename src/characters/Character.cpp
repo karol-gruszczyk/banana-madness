@@ -1,18 +1,27 @@
 #include "Character.h"
-#include <iostream>
-Character::Character(std::vector<std::string>& texturePaths, double spriteDelta, sf::Vector2f position /* = { 0, 0 } */)
+
+
+Character::Character()
+{
+	lastFrameTime = clock();
+	alive = true;
+}
+
+Character::Character(std::vector<std::string>& texturePaths, float spriteDelta, sf::Vector2f position /* = { 0, 0 } */) :
+	Character()
 {
 	load(texturePaths, spriteDelta, position);
 }
 
 Character::Character(Character& instance, sf::Vector2f position /* = { 0, 0 } */) :
-	spriteTextures(instance.spriteTextures),
-	spriteDelta(instance.spriteDelta)
+	Character()
 {
 	setPosition(position);
+	spriteTextures = instance.spriteTextures;
+	spriteDelta = instance.spriteDelta;
 }
 
-void Character::load(std::vector<std::string>& texturePaths, double spriteDelta, sf::Vector2f position /* = */ )
+void Character::load(std::vector<std::string>& texturePaths, float spriteDelta, sf::Vector2f position /* = */ )
 {
 	this->spriteDelta = spriteDelta;
 	spriteTextures = std::make_shared<std::vector<Drawable>>(texturePaths.size());
@@ -23,32 +32,33 @@ void Character::load(std::vector<std::string>& texturePaths, double spriteDelta,
 
 void Character::render()
 {
+	deltaTime = (float)difftime(clock(), lastFrameTime) / CLOCKS_PER_SEC * 1000.f;
 	if (moving)
 	{
-		deltaTime += difftime(lastFrameTime, time(nullptr));
-		if (deltaTime >= spriteDelta)
+		spriteDeltaTime += deltaTime;
+		if (spriteDeltaTime >= spriteDelta)
 		{
-			deltaTime -= spriteDelta;
+			spriteDeltaTime -= spriteDelta;
 			if (++currentSprite >= spriteTextures->size())
 				currentSprite = 0;
 		}
 	}
 	else
 	{
-		moving = true;
-		deltaTime = 0;
+		spriteDeltaTime = 0;
 		currentSprite = 0;
 	}
 	(*spriteTextures)[currentSprite].render();
-	lastFrameTime = time(nullptr);
+	lastFrameTime = clock();
 }
 
 void Character::setPosition(sf::Vector2f newPos)
 {
+	moving = position.x != newPos.x;
+	
 	position = newPos;
 	for (auto& i : *spriteTextures)
 		i.setPosition(newPos);
-	moving = true;
 }
 
 sf::Vector2f Character::getPosition()
@@ -56,16 +66,14 @@ sf::Vector2f Character::getPosition()
 	return position;
 }
 
-void Character::move(std::unique_ptr< std::vector < std::vector< std::unique_ptr <Block> > > >& blocks, sf::Vector2f deltaPos)
+bool Character::move(std::unique_ptr< std::vector < std::vector< std::unique_ptr <Block> > > >& blocks, sf::Vector2f deltaPos)
 {
 	if (deltaPos.x != 0.f && deltaPos.y != 0.f)
-	{
-		move(blocks, { deltaPos.x, 0.f });
-		move(blocks, { 0.f, deltaPos.y });
-	}
+		return move(blocks, { deltaPos.x, 0.f }) || move(blocks, { 0.f, deltaPos.y });
+
 	sf::Vector2f newPos = { position.x + deltaPos.x, position.y + deltaPos.y };
 	if (newPos.x < 0.f || newPos.y < 0.f)
-		return;
+		return false;
 
 	sf::Vector2f calcPos = newPos;
 	bool detectedCollision = false;
@@ -93,7 +101,11 @@ void Character::move(std::unique_ptr< std::vector < std::vector< std::unique_ptr
 	}
 
 	if (!detectedCollision)
+	{
 		setPosition(newPos);
+		return true;
+	}
+	return false;
 }
 
 sf::Vector2u Character::getSize()
@@ -103,7 +115,17 @@ sf::Vector2u Character::getSize()
 
 void Character::handlePhysics(std::unique_ptr< std::vector < std::vector< std::unique_ptr <Block> > > >& blocks)
 {
-	move(blocks, { 0.f, 1.f });
+	try {
+		if (move(blocks, { 0.f, speed * deltaTime / 1000.f }))
+			speed += 9.81f * deltaTime;
+		else
+			speed = 0.f;
+
+		if (speed > MAX_CHARACTER_SPEED)
+			speed = MAX_CHARACTER_SPEED;
+	} catch (std::out_of_range) {
+		alive = false;
+	}
 }
 
 sf::Vector2u Character::getBlockIndices(std::unique_ptr< std::vector < std::vector< std::unique_ptr <Block> > > >& blocks, sf::Vector2f pos)
@@ -112,7 +134,12 @@ sf::Vector2u Character::getBlockIndices(std::unique_ptr< std::vector < std::vect
 	auto& block = *(*blocks)[0][0];
 	x = pos.x / block.getSize().x;
 	y = (block.getPosition().y - pos.y) / block.getSize().y + 1;
-	if (x < 0.f || y < 0.f)
+	if (x <= -1.f || y <= -1.f)
 		throw std::out_of_range("The gives position does not match any map coordinates");
 	return{ unsigned(x), unsigned(y) };
+}
+
+bool Character::isAlive()
+{
+	return alive;
 }

@@ -15,6 +15,12 @@ Level::Level(sf::RenderWindow& windowHandle, const char** levelPaths) :
 		throw FileLoadException(HEADER_FONT_PATH);
 	gameOverText.setFont(gameOverFont);
 	gameOverText.setCharacterSize(100);
+	
+	if (!levelClearedSoundBuffer.loadFromFile(LEVEL_CLEARED_SOUND_PATH))
+		throw FileLoadException(LEVEL_CLEARED_SOUND_PATH);
+	levelClearedSound.setBuffer(levelClearedSoundBuffer);
+
+	lifes = 3;
 }
 
 Level::operator bool()
@@ -26,13 +32,14 @@ void Level::loadMap(std::string mapPath)
 {
 	MapParser parser(mapPath);
 	parser.parseFile();
-	player = std::make_unique<Playable>(parser.getPlayerSpritePaths(), 0.2f, parser.getPlayerPosition());
+	player = std::make_unique<Playable>(parser.getPlayerSpritePaths(), 0.1f, parser.getPlayerPosition());
+	enemies = std::move(parser.getEnemies());
 	blocks = std::move(parser.getBlockArray());
 
 	backgroundImage.load(parser.getBackgroundImagePath());
 	backgroundImage.setSize();
 	auto musicPath = parser.getBackgroundMusicPath();
-	if (!musicHandle.openFromFile(musicPath))
+	if (!levelMusic.openFromFile(musicPath))
 		throw FileLoadException(musicPath);
 
 	gameView = sf::View(sf::FloatRect(0.f, 0.f, (float)windowHandle->getSize().x, (float)windowHandle->getSize().y));
@@ -50,16 +57,24 @@ void Level::runFrame(BananaMadness::GameState& gameState, std::vector<unsigned> 
 {
 	if (player->isAlive())
 	{
-		if (musicHandle.getStatus() != sf::Music::Status::Playing && gameState == BananaMadness::GameState::IN_GAME)
-			musicHandle.play();
+		if (levelMusic.getStatus() != sf::Music::Status::Playing && gameState == BananaMadness::GameState::IN_GAME)
+			levelMusic.play();
 		handleInput(gameState, pressedKeys, releasedKeys);
 		player->update(blocks, pressedKeys, releasedKeys);
+		for (auto& enemy : *enemies)
+			enemy->update(blocks);
+		if (player->hasReachedEndOfMap())
+		{
+			levelMusic.stop();
+			levelClearedSound.play();
+			gameState = BananaMadness::LEVEL_CLEARED;
+		}
 	}
 	else
 	{
 		if (gameOverSound.getStatus() != sf::Sound::Playing)
 		{
-			musicHandle.stop();
+			levelMusic.stop();
 			gameOverSound.play();
 		}
 		else if (gameOverSound.getPlayingOffset() > sf::seconds(GAME_OVER_DELAY))
@@ -106,6 +121,8 @@ void Level::render()
 		for (auto& j : i)
 			if (j)
 				j->render();
+	for (auto& enemy : *enemies)
+		enemy->render();
 	player->render();
 	windowHandle->draw(gameOverText);
 }
@@ -117,7 +134,7 @@ void Level::handleInput(BananaMadness::GameState& gameState, std::vector<unsigne
 		switch (i)
 		{
 		case sf::Keyboard::Escape:
-			musicHandle.pause();
+			levelMusic.pause();
 			gameState = BananaMadness::GameState::PAUSED;
 			break;
 		}
@@ -132,7 +149,11 @@ void Level::reloadLevel()
 
 void Level::loadLevel(unsigned levelIndex)
 {
-	lifes = 3;
 	currentLevel = levelIndex;
 	loadMap(levelPaths[levelIndex]);
+}
+
+unsigned Level::getCurrentLevel()
+{
+	return currentLevel;
 }

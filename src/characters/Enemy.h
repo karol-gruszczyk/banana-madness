@@ -4,9 +4,11 @@
 class Enemy : public Character
 {
 public:
-	Enemy(std::vector<std::string>& texturePaths, float spriteDelta, sf::Vector2f position = { 0, 0 });
-	Enemy(Enemy& instance, sf::Vector2f position = { 0, 0 });
+	Enemy(std::vector<std::string>& texturePaths, float spriteDelta, sf::Vector2f position, float end);
+	Enemy(Enemy& instance, sf::Vector2f position, float end);
+	void update(std::unique_ptr< std::vector < std::vector< std::unique_ptr <Block> > > >& blocks);
 private:
-	unsigned startX, endX;
+	float startX, endX;
+	bool direction;
 };
 

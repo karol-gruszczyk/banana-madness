@@ -162,3 +162,9 @@ void Character::kill()
 {
 	alive = false;
 }
+
+void Character::flipX()
+{
+	for (auto& sprite : *spriteTextures)
+		sprite.setScale({ -1.f * sprite.getScale().x, 1.f });
+}

@@ -21,6 +21,8 @@ public:
 	sf::Vector2f getPosition();
 	void setSize(sf::Vector2u size = { 0, 0 });
 	sf::Vector2u getSize();
+	void setScale(sf::Vector2f factors);
+	sf::Vector2f getScale();
 protected:
 	static sf::RenderWindow* windowHandle;
 private:

@@ -11,6 +11,10 @@ public:
 	void update(std::unique_ptr< std::vector < std::vector< std::unique_ptr <Block> > > >& blocks,
 				std::vector<unsigned> pressedKeys, 
 				std::vector<unsigned> releasedKeys);
+	bool hasReachedEndOfMap();
+protected:
+	bool reachedEndOfMap;
+	bool move(std::unique_ptr< std::vector < std::vector< std::unique_ptr <Block> > > >& blocks, sf::Vector2f deltaPos);
 private:
 	std::map<unsigned, bool> isKeyPressed;
 };

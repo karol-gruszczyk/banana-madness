@@ -18,6 +18,7 @@
 #define GAME_OVER_SOUND_PATH "data/sound/gameover.wav"
 #define HEADER_FONT_PATH "data/rockgarage.ttf"
 #define SIMPLE_FONT_PATH "data/arial.ttf"
+#define LEVEL_CLEARED_SOUND_PATH "data/sound/level_cleared.wav"
 
 #define GRAVITY 5.f
 #define MAX_CHARACTER_SPEED 500.f
@@ -25,8 +26,10 @@
 #define PLAYER_WALK_SPEED 0.5f
 #define GAME_OVER_DELAY 3.75f
 
+#define ENEMY_MOVING_SPEED 0.25f
+
 namespace BananaMadness
 {
-	enum GameState { IN_INTRO, IN_MENU, IN_GAME, PAUSED, GAME_OVER };
+	enum GameState { IN_INTRO, IN_MENU, IN_GAME, PAUSED, GAME_OVER, LEVEL_CLEARED };
 }
 extern const char* levels[2];

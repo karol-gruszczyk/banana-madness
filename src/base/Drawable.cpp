@@ -54,3 +54,13 @@ sf::Vector2u Drawable::getSize()
 {
 	return size;
 }
+
+void Drawable::setScale(sf::Vector2f factors)
+{
+	spriteHandle.setScale(factors);
+}
+
+sf::Vector2f Drawable::getScale()
+{
+	return spriteHandle.getScale();
+}

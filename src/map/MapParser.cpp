@@ -11,7 +11,8 @@ void MapParser::parseFile()
 	parseFilePaths(file);
 	parseMapAttributes(file);
 	parseBlocks(file);
-	parseCharacter(file);
+	parseSprites(file);
+	parsePlayer();
 	parseMap(file);
 	parseEnemies(file);
 
@@ -35,7 +36,7 @@ std::string MapParser::getBackgroundMusicPath()
 
 std::vector<std::string> MapParser::getPlayerSpritePaths()
 {
-	return characterSpritePaths;
+	return playerSpritePaths;
 }
 
 void MapParser::parseFilePaths(std::ifstream& file)
@@ -46,6 +47,17 @@ void MapParser::parseFilePaths(std::ifstream& file)
 	{
 		getKeyValueFromString(line, key, value);
 		filePaths[key] = value;
+	}
+}
+
+void MapParser::parseSprites(std::ifstream& file)
+{
+	auto lines = getLinesFromTag(file, "sprites");
+	std::string key, value;
+	for (auto& line : *lines)
+	{
+		getKeyValueFromString(line, key, value);
+		spritePaths[key] = getSpritePaths(value);
 	}
 }
 
@@ -90,23 +102,63 @@ void MapParser::parseMapAttributes(std::ifstream& file)
 void MapParser::parseEnemies(std::ifstream& file)
 {
 	auto lines = getLinesFromTag(file, "enemies");
+	std::map<std::string, Enemy*> enemyInstances;
+	enemyArray = std::make_unique<std::vector<std::unique_ptr<Enemy>>>();
 	for (auto& line : *lines)
 	{
+		std::string key, value;
+		getKeyValueFromString(line, key, value);
+		value.erase(std::remove_if(value.begin(), value.end(), [](char chr){ return chr == '(' || chr == ')'; }), value.end());
 
+		std::vector<std::string> props_tmp = splitString(value, ",");
+		std::vector<std::string> props = splitString(props_tmp[1], ",");
+		props.push_back(props_tmp[0]);
+		std::string sprite_key;
+		sf::Vector2f spawnPos;
+		float end;
+		for (auto& prop : props)
+		{
+			std::string prop_key, prop_value;
+			getKeyValueFromString(prop, prop_key, prop_value);
+			if (prop_key == "start")
+			{
+				sf::Vector2u mapPos;
+				std::istringstream stream(prop_value);
+				stream >> mapPos.x >> mapPos.y;
+				spawnPos = (*blockArray)[0][0]->getWorldPosition(mapPos);
+			}
+			else if (prop_key == "end")
+			{
+				std::istringstream stream(prop_value);
+				stream >> end;
+				end *= (*blockArray)[0][0]->getSize().x;
+			}
+			else if (prop_key == "sprite")
+				sprite_key = prop_value;
+		}
+		enemyArray->push_back(std::make_unique<Enemy>(spritePaths[sprite_key], 0.2f, spawnPos, end));
+		enemyInstances[key] = (*enemyArray)[enemyArray->size() - 1].get();
 	}
 }
 
-void MapParser::parseCharacter(std::ifstream& file)
+void MapParser::parsePlayer()
 {
-	std::string sprites_str = mapAttributes["player"];
+	playerSpritePaths = spritePaths[mapAttributes["player"]];
+}
+
+std::vector<std::string> MapParser::getSpritePaths(std::string spriteString)
+{
+	std::string sprites_str = spriteString;
+	std::vector<std::string> characterSprites;
 	sprites_str.erase(std::remove_if(sprites_str.begin(), sprites_str.end(), [](char chr){ return chr == '(' || chr == ')'; }), sprites_str.end());
 	while (sprites_str.find(',') != std::string::npos)
 	{
 		auto tmp = splitString(sprites_str, ",");
-		characterSpritePaths.push_back(filePaths[tmp[0]]);
+		characterSprites.push_back(filePaths[tmp[0]]);
 		sprites_str = tmp[1];
 	}
-	characterSpritePaths.push_back(filePaths[sprites_str]);
+	characterSprites.push_back(filePaths[sprites_str]);
+	return characterSprites;
 }
 
 void MapParser::parseMap(std::ifstream& file)
@@ -188,4 +240,9 @@ sf::Vector2f MapParser::getPlayerPosition()
 	stream << str[0] << " " << str[1];
 	stream >> position.x >> position.y;
 	return (*blockArray)[0][0]->getWorldPosition(position);
+}
+
+std::unique_ptr< std::vector < std::unique_ptr <Enemy> > >& MapParser::getEnemies()
+{
+	return enemyArray;
 }

@@ -24,8 +24,9 @@ public:
 	sf::Vector2f getPosition();
 	sf::Vector2u getSize();
 protected:
+	void flipX();
 	static sf::Vector2u getBlockIndices(std::unique_ptr< std::vector < std::vector< std::unique_ptr <Block> > > >& blocks, sf::Vector2f pos);
-	bool move(std::unique_ptr< std::vector < std::vector< std::unique_ptr <Block> > > >& blocks, sf::Vector2f deltaPos);
+	virtual bool move(std::unique_ptr< std::vector < std::vector< std::unique_ptr <Block> > > >& blocks, sf::Vector2f deltaPos);
 	void handlePhysics(std::unique_ptr< std::vector < std::vector< std::unique_ptr <Block> > > >& blocks);
 	float speed;
 	float deltaTime;
@@ -38,7 +39,5 @@ private:
 	unsigned currentSprite;
 	std::clock_t lastFrameTime;
 	std::shared_ptr< std::vector<Drawable> > spriteTextures;
-
-	
 };
 

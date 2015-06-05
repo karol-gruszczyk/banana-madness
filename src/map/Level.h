@@ -24,6 +24,7 @@ public:
 	void reloadLevel();
 	void runFrame(BananaMadness::GameState& gameState, std::vector<unsigned> pressedKeys, std::vector<unsigned> releasedKeys);
 	void render();
+	unsigned getCurrentLevel();
 	operator bool();
 private:
 	sf::RenderWindow* windowHandle;
@@ -37,15 +38,16 @@ private:
 	std::unique_ptr< std::vector < std::vector< std::unique_ptr <Block> > > > blocks;
 	std::unique_ptr< std::vector < std::unique_ptr < Enemy > > > enemies;
 	Drawable backgroundImage;
-	sf::Music musicHandle;
+	sf::Music levelMusic;
 	sf::SoundBuffer gameOverSoundBuffer;
 	sf::Sound gameOverSound;
 	std::unique_ptr<Playable> player;
 	sf::Font gameOverFont;
 	sf::Text gameOverText;
 	unsigned gameOverTextCounter;
+	sf::SoundBuffer levelClearedSoundBuffer;
+	sf::Sound levelClearedSound;
 
 	void loadMap(std::string mapPath);
 	void handleInput(BananaMadness::GameState& gameState, std::vector<unsigned> pressedKeys, std::vector<unsigned> releasedKeys);
 };
-

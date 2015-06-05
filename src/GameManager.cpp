@@ -59,6 +59,10 @@ void GameManager::renderGameState()
 		level->render();
 		menu->runFrame(gameState, releasedKeys, *level);
 		break;
+	case BananaMadness::GameState::LEVEL_CLEARED:
+		level->render();
+		menu->runFrame(gameState, releasedKeys, *level);
+		break;
 	}
 }
 

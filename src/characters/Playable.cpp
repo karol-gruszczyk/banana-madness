@@ -38,3 +38,17 @@ void Playable::update(std::unique_ptr< std::vector < std::vector< std::unique_pt
 		}
 	}
 }
+
+bool Playable::move(std::unique_ptr< std::vector < std::vector< std::unique_ptr <Block> > > >& blocks, sf::Vector2f deltaPos)
+{
+	auto newX = getPosition().x + deltaPos.x;
+	auto maxX = (*blocks)[0][0]->getSize().x * (*blocks).size() - getSize().x;
+	if (newX > maxX)
+		reachedEndOfMap = true;
+	return Character::move(blocks, deltaPos);
+}
+
+bool Playable::hasReachedEndOfMap()
+{
+	return reachedEndOfMap;
+}

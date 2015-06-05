@@ -49,7 +49,12 @@ void Menu::runFrame(BananaMadness::GameState& gameState, std::vector<unsigned> p
 			if (selectedMenu != GAME_OVER_MENU)
 				selectButton(GAME_OVER_MENU, 0);
 			headerText.setString("GAME OVER");
-
+		}
+		else if (gameState == BananaMadness::GameState::LEVEL_CLEARED)
+		{
+			if (selectedMenu != LEVEL_CLEARED_MENU)
+				selectButton(LEVEL_CLEARED_MENU, 0);
+			headerText.setString("LEVEL CLEARED");
 		}
 		windowHandle->draw(headerText);
 		headerText.setPosition(windowHandle->getSize().x / 2.f - headerText.getLocalBounds().width / 2.f,
@@ -76,6 +81,9 @@ void Menu::setupButtons(std::string buttonImage, sf::Vector2u resolution)
 	buttons[PAUSED_MENU].push_back(std::make_unique<Button>(refBtn, "QUIT"));
 
 	buttons[GAME_OVER_MENU].push_back(std::make_unique<Button>(refBtn, "REPLAY"));
+
+	buttons[LEVEL_CLEARED_MENU].push_back(std::make_unique<Button>(refBtn, "REPLAY"));
+	buttons[LEVEL_CLEARED_MENU].push_back(std::make_unique<Button>(refBtn, "NEXT LEVEL"));
 
 	unsigned x = unsigned(resolution.x / 2.f - refBtn.getSize().x / 2.f);
 	unsigned y_tmp = unsigned(resolution.y / 2.f);
@@ -179,10 +187,23 @@ void Menu::clickButton(BananaMadness::GameState& gameState, Level& mapHandle)
 			break;
 		}
 		break;
-	case Menu::GAME_OVER_MENU:
+	case Menu::GAME_OVER_MENU: //replay
 		musicHandle.stop();
 		mapHandle.reloadLevel();
 		gameState = BananaMadness::IN_GAME;
+		break;
+	case Menu::LEVEL_CLEARED_MENU:
+		switch (selectedButton)
+		{
+		case 0: // replay
+			mapHandle.reloadLevel();
+			break;
+		case 1: // next level
+			mapHandle.loadLevel(mapHandle.getCurrentLevel() + 1);
+			break;
+		}
+		gameState = BananaMadness::IN_GAME;
+		musicHandle.stop();
 		break;
 	}
 	buttons[selectedMenu][selectedButton]->playClickSound();

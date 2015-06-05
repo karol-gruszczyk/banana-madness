@@ -13,7 +13,7 @@ void Playable::update(std::unique_ptr< std::vector < std::vector< std::unique_pt
 					  std::vector<unsigned> pressedKeys,
 					  std::vector<unsigned> releasedKeys)
 {
-	Character::handlePhysics(blocks);
+	Character::update(blocks);
 	for (auto& key : pressedKeys)
 		isKeyPressed[key] = true;
 	for (auto& key : releasedKeys)
@@ -32,7 +32,7 @@ void Playable::update(std::unique_ptr< std::vector < std::vector< std::unique_pt
 			move(blocks, { PLAYER_WALK_SPEED * deltaTime, 0.f });
 			break;
 		case sf::Keyboard::Space:
-			if (speed == 0.f)
+			if (speed == 0.f && !move(blocks, { 0.f, 1.f }))
 				speed = -PLAYER_JUMP_SPEED;
 			break;
 		}

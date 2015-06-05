@@ -1,5 +1,4 @@
 #include "MapParser.h"
-#include <iostream>
 
 MapParser::MapParser(std::string filename) : filename(filename)
 {}
@@ -69,6 +68,10 @@ void MapParser::parseBlocks(std::ifstream& file)
 		
 		if (blockType == "normal")
 			blocks[blockName] = std::make_unique<Block>(imgPath);
+		else if (blockType == "invisible")
+			blocks[blockName] = std::make_unique<InvisibleBlock>(imgPath);
+		else if (blockType == "spike")
+			blocks[blockName] = std::make_unique<SpikeBlock>(imgPath);
 	}
 }
 
@@ -127,7 +130,14 @@ void MapParser::parseMap(std::ifstream& file)
 					blockInstaces[blockName] = &(*(*blockArray)[i][j]);
 				}
 				else
-					(*blockArray)[i][j] = std::make_unique<Block>(*blockInstaces[blockName], sf::Vector2u{ i, j });
+				{
+					if (auto ptr = dynamic_cast<SpikeBlock*>(blockInstaces[blockName]))
+						(*blockArray)[i][j] = std::make_unique<SpikeBlock>(*ptr, sf::Vector2u{ i, j });
+					else if (auto ptr = dynamic_cast<InvisibleBlock*>(blockInstaces[blockName]))
+						(*blockArray)[i][j] = std::make_unique<InvisibleBlock>(*ptr, sf::Vector2u{ i, j });
+					else
+						(*blockArray)[i][j] = std::make_unique<Block>(*blockInstaces[blockName], sf::Vector2u{ i, j });
+				}
 
 			}
 		}

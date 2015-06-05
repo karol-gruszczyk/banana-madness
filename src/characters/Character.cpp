@@ -1,5 +1,5 @@
 #include "Character.h"
-
+#include <iostream>
 
 Character::Character()
 {
@@ -33,9 +33,15 @@ void Character::load(std::vector<std::string>& texturePaths, float spriteDelta, 
 void Character::render()
 {
 	deltaTime = (float)difftime(clock(), lastFrameTime) / CLOCKS_PER_SEC * 1000.f;
+	(*spriteTextures)[currentSprite].render();
+	lastFrameTime = clock();
+}
+
+void Character::update(std::unique_ptr< std::vector < std::vector< std::unique_ptr <Block> > > >& blocks)
+{
 	if (moving)
 	{
-		spriteDeltaTime += deltaTime;
+		spriteDeltaTime += deltaTime / 1000.f;
 		if (spriteDeltaTime >= spriteDelta)
 		{
 			spriteDeltaTime -= spriteDelta;
@@ -48,8 +54,7 @@ void Character::render()
 		spriteDeltaTime = 0;
 		currentSprite = 0;
 	}
-	(*spriteTextures)[currentSprite].render();
-	lastFrameTime = clock();
+	handlePhysics(blocks);
 }
 
 void Character::setPosition(sf::Vector2f newPos)
@@ -72,7 +77,8 @@ bool Character::move(std::unique_ptr< std::vector < std::vector< std::unique_ptr
 		return move(blocks, { deltaPos.x, 0.f }) || move(blocks, { 0.f, deltaPos.y });
 
 	sf::Vector2f newPos = { position.x + deltaPos.x, position.y + deltaPos.y };
-	if (newPos.x < 0.f || newPos.y < 0.f)
+	auto maxX = (*blocks)[0][0]->getSize().x * (*blocks).size() - getSize().x;
+	if (newPos.x < 0.f || newPos.x > maxX || newPos.y < 0.f)
 		return false;
 
 	sf::Vector2f calcPos = newPos;
@@ -86,7 +92,11 @@ bool Character::move(std::unique_ptr< std::vector < std::vector< std::unique_ptr
 		auto indEnd = getBlockIndices(blocks, calcPos);
 		for (auto y = indStart.y; y <= indEnd.y; y++)
 			if (indStart.x < (*blocks).size() && y < (*blocks)[indStart.x].size() && (*blocks)[indStart.x][y])
+			{
 				detectedCollision = detectedCollision || (*blocks)[indStart.x][y]->isCollidable();
+				if ((*blocks)[indStart.x][y]->kills())
+					alive = false;
+			}
 	}
 	else
 	{
@@ -97,7 +107,11 @@ bool Character::move(std::unique_ptr< std::vector < std::vector< std::unique_ptr
 		auto indEnd = getBlockIndices(blocks, { calcPos.x + getSize().x, calcPos.y });
 		for (auto x = indStart.x; x <= indEnd.x; x++)
 			if (x < (*blocks).size() && indStart.y < (*blocks)[x].size() && (*blocks)[x][indStart.y])
+			{
 				detectedCollision = detectedCollision || (*blocks)[x][indStart.y]->isCollidable();
+				if ((*blocks)[x][indStart.y]->kills())
+					alive = false;
+			}
 	}
 
 	if (!detectedCollision)
@@ -117,7 +131,7 @@ void Character::handlePhysics(std::unique_ptr< std::vector < std::vector< std::u
 {
 	try {
 		if (move(blocks, { 0.f, speed * deltaTime / 1000.f }))
-			speed += 9.81f * deltaTime;
+			speed += GRAVITY * deltaTime;
 		else
 			speed = 0.f;
 
@@ -142,4 +156,9 @@ sf::Vector2u Character::getBlockIndices(std::unique_ptr< std::vector < std::vect
 bool Character::isAlive()
 {
 	return alive;
+}
+
+void Character::kill()
+{
+	alive = false;
 }

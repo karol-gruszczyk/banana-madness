@@ -1,14 +1,12 @@
 #include "Block.h"
 
-Block::Block(std::string imagePath, sf::Vector2u mapPosition /* = { 0, 0} */) :
-	collidable(true)
+Block::Block(std::string imagePath, sf::Vector2u mapPosition /* = { 0, 0} */)
 {
 	load(imagePath, mapPosition);
 }
 
-Block::Block(Block& instance, sf::Vector2u mapPosition /* = { 0, 0} */) : 
-	Drawable(instance),
-	collidable(true)
+Block::Block(Block& instance, sf::Vector2u mapPosition /* = { 0, 0} */) :
+	Drawable(instance)
 {
 	setMapPosition(mapPosition);
 }
@@ -34,5 +32,10 @@ void Block::setMapPosition(sf::Vector2u mapPostion)
 
 bool Block::isCollidable()
 {
-	return collidable;
+	return true;
+}
+
+bool Block::kills()
+{
+	return false;
 }

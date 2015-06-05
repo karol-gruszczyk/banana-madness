@@ -10,8 +10,8 @@ GameManager::GameManager(sf::Vector2u resolution, bool fullscreen)
 	Drawable::windowHandle = &windowHandle;
 	gameState = INITIAL_GAME_STATE;
 	intro = std::make_unique<Intro>(INTRO_VIDEO);
-	menu = std::make_unique<Menu>(MENU_BACKGROUND, MENU_MUSIC, BUTTON_IMAGE, BUTTON_SELECTED_IMAGE, PLAY_SOUND, windowHandle);
-	level = std::make_unique<Level>(windowHandle);
+	menu = std::make_unique<Menu>(windowHandle);
+	level = std::make_unique<Level>(windowHandle, levels);
 }
 
 void GameManager::runFrame()

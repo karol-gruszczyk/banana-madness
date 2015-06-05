@@ -17,8 +17,10 @@ public:
 
 	void load(std::vector<std::string>& texturePaths, float spriteDelta, sf::Vector2f position = { 0, 0 });
 	void render();
+	void update(std::unique_ptr< std::vector < std::vector< std::unique_ptr <Block> > > >& blocks);
 	void setPosition(sf::Vector2f newPos);
 	bool isAlive();
+	void kill();
 	sf::Vector2f getPosition();
 	sf::Vector2u getSize();
 protected:

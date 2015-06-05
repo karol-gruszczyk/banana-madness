@@ -1,32 +1,29 @@
 #include "Menu.h"
 
-Menu::Menu(std::string backgroundImagePath,
-	std::string menuMusicPath,
-	std::string buttonImagePath,
-	std::string selectedImagePath,
-	std::string playSoundPath,
-	sf::RenderWindow& windowHandle) : windowHandle(&windowHandle)
+Menu::Menu(sf::RenderWindow& windowHandle) : windowHandle(&windowHandle)
 {
 	menuView = sf::View(sf::FloatRect(0.f, 0.f, (float)windowHandle.getSize().x, (float)windowHandle.getSize().y));
 
-	backgroundImage.load(backgroundImagePath);
+	backgroundImage.load(MENU_BACKGROUND_PATH);
 	backgroundImage.setSize();
 
-	if (!musicHandle.openFromFile(menuMusicPath))
-		throw FileLoadException(menuMusicPath);
+	if (!musicHandle.openFromFile(MENU_MUSIC_PATH))
+		throw FileLoadException(MENU_MUSIC_PATH);
 	musicHandle.setLoop(true);
 
-	selectedImage.load(selectedImagePath);
+	selectedImage.load(BUTTON_SELECTED_IMAGE_PATH);
 
-	setupButtons(buttonImagePath, windowHandle.getSize());
+	setupButtons(BUTTON_IMAGE_PATH, windowHandle.getSize());
 	selectButton(MAIN_MENU, 0);
-
-	if (!playSoundBuffer.loadFromFile(playSoundPath))
-		throw FileLoadException(playSoundPath);
-	playSound.setBuffer(playSoundBuffer);
 
 	curtain.setSize((sf::Vector2f)windowHandle.getSize());
 	curtain.setFillColor(sf::Color(0, 0, 0, 200));
+
+	if (!headerFont.loadFromFile(HEADER_FONT_PATH))
+		throw FileLoadException(HEADER_FONT_PATH);
+	headerText.setFont(headerFont);
+	headerText.setColor(sf::Color::White);
+	headerText.setCharacterSize(100);
 }
 
 void Menu::runFrame(BananaMadness::GameState& gameState, std::vector<unsigned> pressedKeys, Level& mapHandle)
@@ -42,9 +39,18 @@ void Menu::runFrame(BananaMadness::GameState& gameState, std::vector<unsigned> p
 	} else {
 		windowHandle->draw(curtain);
 		if (gameState == BananaMadness::GameState::PAUSED)
+		{
 			selectedMenu = PAUSED_MENU;
+			headerText.setString("PAUSED");
+		}
 		else if (gameState == BananaMadness::GameState::GAME_OVER)
+		{
 			selectedMenu = GAME_OVER_MENU;
+			headerText.setString("GAME OVER");
+		}
+		windowHandle->draw(headerText);
+		headerText.setPosition(windowHandle->getSize().x / 2.f - headerText.getLocalBounds().width / 2.f,
+							   .05f * windowHandle->getSize().y);
 	}
 	selectedImage.render();
 	for (auto& btn : buttons[selectedMenu])
@@ -146,9 +152,7 @@ void Menu::clickButton(BananaMadness::GameState& gameState, Level& mapHandle)
 		{
 		case 0: // new game
 			musicHandle.stop();
-			playSound.play();
-			mapHandle.loadMap(levels[0]);
-			playSound.stop();
+			mapHandle.loadLevel(0);
 			gameState = BananaMadness::IN_GAME;
 			break;
 		case 1: // load game
@@ -162,10 +166,10 @@ void Menu::clickButton(BananaMadness::GameState& gameState, Level& mapHandle)
 		switch (selectedButton)
 		{
 		case 0: // resume
-			gameState = BananaMadness::GameState::IN_GAME;
+			gameState = BananaMadness::IN_GAME;
 			break;
 		case 1: // to menu
-			gameState = BananaMadness::GameState::IN_MENU;
+			gameState = BananaMadness::IN_MENU;
 			selectButton(Menu::MAIN_MENU, 0);
 			break;
 		case 2: // quit
@@ -177,10 +181,12 @@ void Menu::clickButton(BananaMadness::GameState& gameState, Level& mapHandle)
 		switch (selectedButton)
 		{
 		case 0: // replay
-			// TODO: reload level
+			musicHandle.stop();
+			mapHandle.reloadLevel();
+			gameState = BananaMadness::IN_GAME;
 			break;
 		case 1: // to menu
-			gameState = BananaMadness::GameState::IN_MENU;
+			gameState = BananaMadness::IN_MENU;
 			selectButton(Menu::MAIN_MENU, 0);
 			break;
 		case 2: // quit

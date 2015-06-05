@@ -10,12 +10,7 @@
 class Menu
 {
 public:
-	Menu(std::string backgroundImagePath,
-		std::string menuMusic,
-		std::string buttonImage,
-		std::string selectedImage,
-		std::string playSoundPath,
-		sf::RenderWindow& windowHandle);
+	Menu(sf::RenderWindow& windowHandle);
 	void runFrame(BananaMadness::GameState& gameState, std::vector<unsigned> pressedKeys, Level& mapHandle);
 private:
 	using ButtonArray = std::vector < std::unique_ptr<Button> > ;
@@ -28,8 +23,8 @@ private:
 
 	sf::RenderWindow* windowHandle;
 	sf::View menuView;
-	sf::SoundBuffer playSoundBuffer;
-	sf::Sound playSound;
+	sf::Font headerFont;
+	sf::Text headerText;
 	MenuState selectedMenu;
 	unsigned selectedButton;
 	sf::Music musicHandle;

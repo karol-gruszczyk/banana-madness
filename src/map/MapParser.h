@@ -6,7 +6,8 @@
 #include <map>
 #include <algorithm>
 
-#include <src/map/blocks/Block.h>
+#include <src/map/blocks/SpikeBlock.h>
+
 
 class MapParser
 {

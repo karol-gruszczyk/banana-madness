@@ -16,7 +16,7 @@ public:
 	Drawable(std::string path, sf::Vector2f position = { 0, 0 });
 
 	void load(std::string path, sf::Vector2f position = { 0, 0 });
-	void render();
+	virtual void render();
 	void setPosition(sf::Vector2f position);
 	sf::Vector2f getPosition();
 	void setSize(sf::Vector2u size = { 0, 0 });

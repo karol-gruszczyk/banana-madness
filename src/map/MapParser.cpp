@@ -13,6 +13,7 @@ void MapParser::parseFile()
 	parseBlocks(file);
 	parseCharacter(file);
 	parseMap(file);
+	parseEnemies(file);
 
 	file.close();
 }
@@ -32,7 +33,7 @@ std::string MapParser::getBackgroundMusicPath()
 	return filePaths[mapAttributes["background_music"]];
 }
 
-std::vector<std::string> MapParser::getCharacterSpritePaths()
+std::vector<std::string> MapParser::getPlayerSpritePaths()
 {
 	return characterSpritePaths;
 }
@@ -177,4 +178,14 @@ std::unique_ptr<std::vector<std::string>> MapParser::getLinesFromTag(std::ifstre
 		lines->push_back(line);
 	}
 	return lines;
+}
+
+sf::Vector2f MapParser::getPlayerPosition()
+{
+	sf::Vector2u position;
+	auto str = splitString(mapAttributes["player_position"], ",");
+	std::stringstream stream;
+	stream << str[0] << " " << str[1];
+	stream >> position.x >> position.y;
+	return (*blockArray)[0][0]->getWorldPosition(position);
 }

@@ -3,6 +3,7 @@ mapbg=data/img/mapbg.png
 brick=data/img/blocks/brick.png
 secret=data/img/blocks/secret.png
 ground=data/img/blocks/ground.png
+spike=data/img/blocks/spike.png
 bg_img=data/img/map_bg.png
 bg_music=data/music/level1.wav
 player_sprite0=data/img/characters/player0.png
@@ -12,32 +13,35 @@ mapattributes
 background_image=bg_img
 background_music=bg_music
 player=(player_sprite0,player_sprite1)
+player_position=0,3
 !mapattributes
 blocks
 G=(img=ground,type=normal)
 B=(img=brick,type=normal)
+I=(img=brick,type=invisible)
+S=(img=spike,type=spike)
 !blocks
 enemies
 
 !enemies
 map
-GGBBB
 GG
 GG
 GG
 GG
+GG
+    I
 
+
+GGS
+GGS
+GGS
+GGS
+GGS
 GG
 GG
-GG
-GG
-GG
-GG
-GG
-GG
-GG
-GG
-GG
+GGS I
+GGS I
 GG
 GG
 GG

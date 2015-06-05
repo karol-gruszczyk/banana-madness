@@ -23,6 +23,7 @@
 #define MAX_CHARACTER_SPEED 500.f
 #define PLAYER_JUMP_SPEED 1500.f
 #define PLAYER_WALK_SPEED 0.5f
+#define GAME_OVER_DELAY 3.75f
 
 namespace BananaMadness
 {

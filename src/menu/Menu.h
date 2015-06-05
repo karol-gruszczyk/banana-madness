@@ -18,7 +18,7 @@ private:
 
 	void setupButtons(std::string buttonImage, sf::Vector2u resolution);
 	void handleInput(BananaMadness::GameState& gameState, std::vector<unsigned> pressedKeys, Level& mapHandle);
-	void selectButton(MenuState state, unsigned buttonIndex);
+	void selectButton(MenuState state, unsigned buttonIndex, bool playSound = false);
 	void clickButton(BananaMadness::GameState& gameState, Level& mapHandle);
 
 	sf::RenderWindow* windowHandle;

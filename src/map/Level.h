@@ -4,6 +4,8 @@
 #include <memory>
 #include <algorithm>
 #include <sstream>
+#include <cstdlib>
+#include <ctime>
 
 #include <SFML/Audio.hpp>
 
@@ -11,6 +13,7 @@
 #include <src/map/blocks/Block.h>
 #include <src/map/MapParser.h>
 #include <src/characters/Playable.h>
+#include <src/characters/Enemy.h>
 
 
 class Level
@@ -32,11 +35,15 @@ private:
 	sf::Font font;
 	sf::Text text;
 	std::unique_ptr< std::vector < std::vector< std::unique_ptr <Block> > > > blocks;
+	std::unique_ptr< std::vector < std::unique_ptr < Enemy > > > enemies;
 	Drawable backgroundImage;
 	sf::Music musicHandle;
 	sf::SoundBuffer gameOverSoundBuffer;
 	sf::Sound gameOverSound;
 	std::unique_ptr<Playable> player;
+	sf::Font gameOverFont;
+	sf::Text gameOverText;
+	unsigned gameOverTextCounter;
 
 	void loadMap(std::string mapPath);
 	void handleInput(BananaMadness::GameState& gameState, std::vector<unsigned> pressedKeys, std::vector<unsigned> releasedKeys);

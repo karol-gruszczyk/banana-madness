@@ -22,12 +22,17 @@ sf::Vector2u Block::getMapPosition()
 	return mapPosition;
 }
 
-void Block::setMapPosition(sf::Vector2u mapPostion)
+void Block::setMapPosition(sf::Vector2u mapPosition)
 {
-	this->mapPosition = mapPostion;
+	this->mapPosition = mapPosition;
 	
 	sf::Vector2u position = { mapPosition.x * getSize().x, windowHandle->getSize().y - (mapPosition.y + 1) * getSize().y };
 	setPosition((sf::Vector2f)position);
+}
+
+sf::Vector2f Block::getWorldPosition(sf::Vector2u mapPosition)
+{
+	return sf::Vector2f( float(mapPosition.x * getSize().x), float(windowHandle->getSize().y - (mapPosition.y + 1) * getSize().y ));
 }
 
 bool Block::isCollidable()

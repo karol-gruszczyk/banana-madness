@@ -10,6 +10,7 @@ public:
 	void load(std::string imagePath, sf::Vector2u mapPosition = {});
 	sf::Vector2u getMapPosition();
 	void setMapPosition(sf::Vector2u mapPostion);
+	 sf::Vector2f getWorldPosition(sf::Vector2u mapPostion);
 	virtual bool isCollidable();
 	virtual bool kills();
 private:

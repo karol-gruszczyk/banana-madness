@@ -5,8 +5,10 @@
 #include <memory>
 #include <map>
 #include <algorithm>
+#include <sstream>
 
 #include <src/map/blocks/SpikeBlock.h>
+#include <src/characters/Enemy.h>
 
 
 class MapParser
@@ -17,7 +19,8 @@ public:
 	std::unique_ptr< std::vector < std::vector< std::unique_ptr <Block> > > >& getBlockArray();
 	std::string getBackgroundImagePath();
 	std::string getBackgroundMusicPath();
-	std::vector<std::string> getCharacterSpritePaths();
+	std::vector<std::string> getPlayerSpritePaths();
+	sf::Vector2f getPlayerPosition();
 	void getEnemies();
 private:
 	std::string filename;

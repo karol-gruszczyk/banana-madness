@@ -13,7 +13,7 @@ void Playable::update(std::unique_ptr< std::vector < std::vector< std::unique_pt
 					  std::vector<unsigned> pressedKeys,
 					  std::vector<unsigned> releasedKeys)
 {
-	Character::update(blocks);
+	Character::update(blocks, true);
 	for (auto& key : pressedKeys)
 		isKeyPressed[key] = true;
 	for (auto& key : releasedKeys)
@@ -39,13 +39,13 @@ void Playable::update(std::unique_ptr< std::vector < std::vector< std::unique_pt
 	}
 }
 
-bool Playable::move(std::unique_ptr< std::vector < std::vector< std::unique_ptr <Block> > > >& blocks, sf::Vector2f deltaPos)
+bool Playable::move(std::unique_ptr< std::vector < std::vector< std::unique_ptr <Block> > > >& blocks, sf::Vector2f deltaPos, bool isPlayer /* = true */)
 {
 	auto newX = getPosition().x + deltaPos.x;
 	auto maxX = (*blocks)[0][0]->getSize().x * (*blocks).size() - getSize().x;
 	if (newX > maxX)
 		reachedEndOfMap = true;
-	return Character::move(blocks, deltaPos);
+	return Character::move(blocks, deltaPos, isPlayer);
 }
 
 bool Playable::hasReachedEndOfMap()

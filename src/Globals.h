@@ -1,5 +1,7 @@
 #pragma once
 
+#include <ctime>
+
 #ifdef _DEBUG
 	#define INITIAL_GAME_STATE BananaMadness::GameState::IN_MENU
 #else
@@ -20,16 +22,25 @@
 #define SIMPLE_FONT_PATH "data/arial.ttf"
 #define LEVEL_CLEARED_SOUND_PATH "data/sound/level_cleared.wav"
 
-#define GRAVITY 5.f
-#define MAX_CHARACTER_SPEED 500.f
-#define PLAYER_JUMP_SPEED 1500.f
-#define PLAYER_WALK_SPEED 0.5f
+#define GRAVITY 9.81f
+#define MAX_CHARACTER_SPEED 750.f
+#define PLAYER_JUMP_SPEED 2000.f
+#define PLAYER_WALK_SPEED 0.6f
 #define GAME_OVER_DELAY 3.75f
 
-#define ENEMY_MOVING_SPEED 0.25f
+#define ENEMY_MOVING_SPEED 0.5f
+#define ENEMY_JUMP_SPEED 2000.f
+
+#define SPRITE_DELTA_TIME 0.05f
+#define EASY_GAME_URL "http://www.gry.pl/gra/prawdziwe-fryzury-barbie"
 
 namespace BananaMadness
 {
 	enum GameState { IN_INTRO, IN_MENU, IN_GAME, PAUSED, GAME_OVER, LEVEL_CLEARED };
 }
+
+#define NUM_LEVELS 2
 extern const char* levels[2];
+
+extern clock_t lastFrameTime;
+extern float deltaTime;

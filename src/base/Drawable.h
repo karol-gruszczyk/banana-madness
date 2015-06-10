@@ -23,6 +23,7 @@ public:
 	sf::Vector2u getSize();
 	void setScale(sf::Vector2f factors);
 	sf::Vector2f getScale();
+	sf::FloatRect getGlobalBounds();
 protected:
 	static sf::RenderWindow* windowHandle;
 private:

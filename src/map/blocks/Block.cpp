@@ -35,7 +35,7 @@ sf::Vector2f Block::getWorldPosition(sf::Vector2u mapPosition)
 	return sf::Vector2f( float(mapPosition.x * getSize().x), float(windowHandle->getSize().y - (mapPosition.y + 1) * getSize().y ));
 }
 
-bool Block::isCollidable()
+bool Block::isCollidable(bool isPlayer)
 {
 	return true;
 }

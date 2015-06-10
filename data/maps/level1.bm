@@ -6,8 +6,8 @@ ground=data/img/blocks/ground.png
 spike=data/img/blocks/spike.png
 bg_img=data/img/map_bg.png
 bg_music=data/music/level1.wav
-player_sprite0=data/img/characters/player0.png
-player_sprite1=data/img/characters/player1.png
+player_sprite0=data/img/characters/banana0.png
+player_sprite1=data/img/characters/banana0.png
 nigga_mario=data/img/characters/nigga_mario.png
 !filepaths
 mapattributes
@@ -25,9 +25,11 @@ G=(img=ground,type=normal)
 B=(img=brick,type=normal)
 I=(img=brick,type=invisible)
 S=(img=spike,type=spike)
+F=(img=ground,type=falling)
+D=(img=brick,type=falling)
 !blocks
 enemies
-nigga_mario=(start=10 5,end=15,sprite=nigga_mario)
+nigga_mario=(start=21 6,end=17,sprite=nigga_mario,type=normal)
 !enemies
 map
 GG
@@ -35,28 +37,23 @@ GG
 GG
 GG
 GG
-    I
-       I
+FF
+FF
+FF  B
+FF  B
+FF  D
+FF  D
+GGS
+GGS
+GG
+GG
+GG
+GG
+GG
 
-GGS
-GGS
-GGS
-GGS
-GGS
-GG
-GG
-GGS I
-GGS I
-GG
-GG
-GG
-GG
-GG
-GG
-GG
-GG
-GG
-GG
+
+GG  B
+GG  B
 GG
 GG
 GG

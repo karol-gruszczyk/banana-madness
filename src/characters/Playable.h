@@ -14,7 +14,7 @@ public:
 	bool hasReachedEndOfMap();
 protected:
 	bool reachedEndOfMap;
-	bool move(std::unique_ptr< std::vector < std::vector< std::unique_ptr <Block> > > >& blocks, sf::Vector2f deltaPos);
+	bool move(std::unique_ptr< std::vector < std::vector< std::unique_ptr <Block> > > >& blocks, sf::Vector2f deltaPos, bool isPlayer = true);
 private:
 	std::map<unsigned, bool> isKeyPressed;
 };

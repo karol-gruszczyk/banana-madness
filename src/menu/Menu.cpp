@@ -67,13 +67,13 @@ void Menu::runFrame(BananaMadness::GameState& gameState, std::vector<unsigned> p
 
 void Menu::setupButtons(std::string buttonImage, sf::Vector2u resolution)
 {
-	buttons[MAIN_MENU].push_back(std::make_unique<Button>(buttonImage, BUTTON_HOVER_SOUND, BUTTON_CLICK_SOUND, BUTTON_FONT, "PLAY"));
+	buttons[MAIN_MENU].push_back(std::make_unique<Button>(buttonImage, BUTTON_HOVER_SOUND, BUTTON_CLICK_SOUND, BUTTON_FONT, "NEW GAME"));
 	auto& refBtn = *buttons[0][0]; // only the background image will be copied from the reference
-	buttons[MAIN_MENU].push_back(std::make_unique<Button>(refBtn, "HELP"));
+	buttons[MAIN_MENU].push_back(std::make_unique<Button>(refBtn, "ABOUT"));
 	buttons[MAIN_MENU].push_back(std::make_unique<Button>(refBtn, "QUIT"));
 
-	buttons[PLAY_MENU].push_back(std::make_unique<Button>(refBtn, "TUTORIAL"));
-	buttons[PLAY_MENU].push_back(std::make_unique<Button>(refBtn, "NEW GAME"));
+	buttons[PLAY_MENU].push_back(std::make_unique<Button>(refBtn, "EASY"));
+	buttons[PLAY_MENU].push_back(std::make_unique<Button>(refBtn, "EXTREMELY HARD"));
 	buttons[PLAY_MENU].push_back(std::make_unique<Button>(refBtn, "BACK"));
 
 	buttons[PAUSED_MENU].push_back(std::make_unique<Button>(refBtn, "RESUME"));
@@ -160,12 +160,14 @@ void Menu::clickButton(BananaMadness::GameState& gameState, Level& mapHandle)
 	case Menu::PLAY_MENU:
 		switch (selectedButton)
 		{
-		case 0: // new game
+		case 0: // easy
+			//open some shit
+			ShellExecute(0, 0, EASY_GAME_URL, 0, 0, SW_SHOW);
+			break;
+		case 1: // extremely hard
 			musicHandle.stop();
 			mapHandle.loadLevel(0);
 			gameState = BananaMadness::IN_GAME;
-			break;
-		case 1: // load game
 			break;
 		case 2: // back
 			selectButton(MAIN_MENU, 0);
@@ -199,7 +201,10 @@ void Menu::clickButton(BananaMadness::GameState& gameState, Level& mapHandle)
 			mapHandle.reloadLevel();
 			break;
 		case 1: // next level
-			mapHandle.loadLevel(mapHandle.getCurrentLevel() + 1);
+			auto levelId = mapHandle.getCurrentLevel() + 1;
+			if (levelId >= NUM_LEVELS)
+				levelId = 0;
+			mapHandle.loadLevel(levelId);
 			break;
 		}
 		gameState = BananaMadness::IN_GAME;

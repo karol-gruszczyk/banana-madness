@@ -8,7 +8,8 @@
 #include <sstream>
 
 #include <src/map/blocks/SpikeBlock.h>
-#include <src/characters/Enemy.h>
+#include <src/map/blocks/FallingBlock.h>
+#include <src/characters/JumpingEnemy.h>
 
 
 class MapParser

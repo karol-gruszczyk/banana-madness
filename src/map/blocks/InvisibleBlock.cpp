@@ -14,8 +14,9 @@ void InvisibleBlock::render()
 		Block::render();
 }
 
-bool InvisibleBlock::isCollidable()
+bool InvisibleBlock::isCollidable(bool isPlayer /* = false */)
 {
-	visible = true;
+	if (isPlayer)
+		visible = true;
 	return true;
 }

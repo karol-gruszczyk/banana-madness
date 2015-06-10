@@ -3,6 +3,7 @@
 #include <vector>
 #include <memory>
 #include <SFML/Audio.hpp>
+#include <windows.h>
 
 #include <src/menu/Button.h>
 #include <src/map/Level.h>

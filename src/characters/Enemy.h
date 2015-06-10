@@ -6,9 +6,12 @@ class Enemy : public Character
 public:
 	Enemy(std::vector<std::string>& texturePaths, float spriteDelta, sf::Vector2f position, float end);
 	Enemy(Enemy& instance, sf::Vector2f position, float end);
-	void update(std::unique_ptr< std::vector < std::vector< std::unique_ptr <Block> > > >& blocks);
+	virtual void update(std::unique_ptr< std::vector < std::vector< std::unique_ptr <Block> > > >& blocks);
+	void kill();
 private:
+	sf::Vector2f spawnPosition;
 	float startX, endX;
-	bool direction;
+
+	void initPositions(float begin, float end);
 };
 

@@ -85,6 +85,8 @@ void MapParser::parseBlocks(std::ifstream& file)
 			blocks[blockName] = std::make_unique<InvisibleBlock>(imgPath);
 		else if (blockType == "spike")
 			blocks[blockName] = std::make_unique<SpikeBlock>(imgPath);
+		else if (blockType == "falling")
+			blocks[blockName] = std::make_unique<FallingBlock>(imgPath);
 	}
 }
 
@@ -110,10 +112,16 @@ void MapParser::parseEnemies(std::ifstream& file)
 		getKeyValueFromString(line, key, value);
 		value.erase(std::remove_if(value.begin(), value.end(), [](char chr){ return chr == '(' || chr == ')'; }), value.end());
 
-		std::vector<std::string> props_tmp = splitString(value, ",");
-		std::vector<std::string> props = splitString(props_tmp[1], ",");
-		props.push_back(props_tmp[0]);
-		std::string sprite_key;
+		std::vector<std::string> props;
+		for (unsigned i = 0; i < 3; ++i)
+		{
+			std::vector<std::string> props_tmp = splitString(value, ",");
+			props.push_back(props_tmp[0]);
+			value = props_tmp[1];
+		}
+		props.push_back(value);
+		
+		std::string sprite_key, type;
 		sf::Vector2f spawnPos;
 		float end;
 		for (auto& prop : props)
@@ -133,11 +141,27 @@ void MapParser::parseEnemies(std::ifstream& file)
 				stream >> end;
 				end *= (*blockArray)[0][0]->getSize().x;
 			}
+			else if (prop_key == "type")
+				type = prop_value;
 			else if (prop_key == "sprite")
 				sprite_key = prop_value;
+
 		}
-		enemyArray->push_back(std::make_unique<Enemy>(spritePaths[sprite_key], 0.2f, spawnPos, end));
-		enemyInstances[key] = (*enemyArray)[enemyArray->size() - 1].get();
+		if (enemyInstances.find(sprite_key) != enemyInstances.end())
+		{
+			if (type == "jumping")
+				enemyArray->push_back(std::make_unique<JumpingEnemy>(*enemyInstances[sprite_key], spawnPos, end));
+			else if (type == "normal")
+				enemyArray->push_back(std::make_unique<Enemy>(*enemyInstances[sprite_key], spawnPos, end));
+		}
+		else
+		{
+			if (type == "jumping")
+				enemyArray->push_back(std::make_unique<JumpingEnemy>(spritePaths[sprite_key], SPRITE_DELTA_TIME, spawnPos, end));
+			else if (type == "normal")
+				enemyArray->push_back(std::make_unique<Enemy>(spritePaths[sprite_key], SPRITE_DELTA_TIME, spawnPos, end));
+			enemyInstances[sprite_key] = (*enemyArray)[enemyArray->size() - 1].get();
+		}
 	}
 }
 
@@ -188,6 +212,8 @@ void MapParser::parseMap(std::ifstream& file)
 						(*blockArray)[i][j] = std::make_unique<SpikeBlock>(*ptr, sf::Vector2u{ i, j });
 					else if (auto ptr = dynamic_cast<InvisibleBlock*>(blockInstaces[blockName]))
 						(*blockArray)[i][j] = std::make_unique<InvisibleBlock>(*ptr, sf::Vector2u{ i, j });
+					else if (auto ptr = dynamic_cast<FallingBlock*>(blockInstaces[blockName]))
+						(*blockArray)[i][j] = std::make_unique<FallingBlock>(*ptr, sf::Vector2u{ i, j });
 					else
 						(*blockArray)[i][j] = std::make_unique<Block>(*blockInstaces[blockName], sf::Vector2u{ i, j });
 				}

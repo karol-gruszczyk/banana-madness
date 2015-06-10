@@ -1,43 +1,34 @@
 #include "Character.h"
 #include <iostream>
 
-Character::Character()
-{
-	lastFrameTime = clock();
-	alive = true;
-}
+Character::Character() :
+	alive(true)
+{}
 
 Character::Character(std::vector<std::string>& texturePaths, float spriteDelta, sf::Vector2f position /* = { 0, 0 } */) :
 	Character()
 {
-	load(texturePaths, spriteDelta, position);
+	this->spriteDelta = spriteDelta;
+	for (auto& texture : texturePaths)
+		spriteTextures.push_back(std::make_unique<Drawable>(texture));
+	setPosition({ position.x, position.y - spriteTextures[0]->getSize().y });
 }
 
 Character::Character(Character& instance, sf::Vector2f position /* = { 0, 0 } */) :
 	Character()
 {
-	setPosition(position);
-	spriteTextures = instance.spriteTextures;
 	spriteDelta = instance.spriteDelta;
-}
-
-void Character::load(std::vector<std::string>& texturePaths, float spriteDelta, sf::Vector2f position /* = */ )
-{
-	this->spriteDelta = spriteDelta;
-	spriteTextures = std::make_shared<std::vector<Drawable>>(texturePaths.size());
-	for (unsigned i = 0; i < texturePaths.size(); ++i)
-		(*spriteTextures)[i].load(texturePaths[i]);
-	setPosition(position);
+	for (auto& sprite : instance.spriteTextures)
+		spriteTextures.push_back(std::make_unique<Drawable>(*sprite));
+	setPosition({ position.x, position.y - spriteTextures[0]->getSize().y });
 }
 
 void Character::render()
 {
-	deltaTime = (float)difftime(clock(), lastFrameTime) / CLOCKS_PER_SEC * 1000.f;
-	(*spriteTextures)[currentSprite].render();
-	lastFrameTime = clock();
+	spriteTextures[currentSprite]->render();
 }
 
-void Character::update(std::unique_ptr< std::vector < std::vector< std::unique_ptr <Block> > > >& blocks)
+void Character::update(std::unique_ptr< std::vector < std::vector< std::unique_ptr <Block> > > >& blocks, bool isPlayer)
 {
 	if (moving)
 	{
@@ -45,7 +36,7 @@ void Character::update(std::unique_ptr< std::vector < std::vector< std::unique_p
 		if (spriteDeltaTime >= spriteDelta)
 		{
 			spriteDeltaTime -= spriteDelta;
-			if (++currentSprite >= spriteTextures->size())
+			if (++currentSprite >= spriteTextures.size())
 				currentSprite = 0;
 		}
 	}
@@ -54,16 +45,16 @@ void Character::update(std::unique_ptr< std::vector < std::vector< std::unique_p
 		spriteDeltaTime = 0;
 		currentSprite = 0;
 	}
-	handlePhysics(blocks);
+	handlePhysics(blocks, isPlayer);
 }
 
 void Character::setPosition(sf::Vector2f newPos)
 {
 	moving = position.x != newPos.x;
-	
+	float offset = direction ? getSize().x : 0.f;
 	position = newPos;
-	for (auto& i : *spriteTextures)
-		i.setPosition(newPos);
+	for (auto& i : spriteTextures)
+		i->setPosition({ newPos.x + offset, newPos.y });
 }
 
 sf::Vector2f Character::getPosition()
@@ -71,10 +62,10 @@ sf::Vector2f Character::getPosition()
 	return position;
 }
 
-bool Character::move(std::unique_ptr< std::vector < std::vector< std::unique_ptr <Block> > > >& blocks, sf::Vector2f deltaPos)
+bool Character::move(std::unique_ptr< std::vector < std::vector< std::unique_ptr <Block> > > >& blocks, sf::Vector2f deltaPos, bool isPlayer)
 {
 	if (deltaPos.x != 0.f && deltaPos.y != 0.f)
-		return move(blocks, { deltaPos.x, 0.f }) || move(blocks, { 0.f, deltaPos.y });
+		return move(blocks, { deltaPos.x, 0.f }, isPlayer) || move(blocks, { 0.f, deltaPos.y }, isPlayer);
 
 	sf::Vector2f newPos = { position.x + deltaPos.x, position.y + deltaPos.y };
 	auto maxX = (*blocks)[0][0]->getSize().x * (*blocks).size() - getSize().x;
@@ -85,6 +76,10 @@ bool Character::move(std::unique_ptr< std::vector < std::vector< std::unique_ptr
 	bool detectedCollision = false;
 	if (deltaPos.x != 0.f)
 	{
+		auto last_dir = direction;
+		direction = deltaPos.x < 0.f;
+		if (direction != last_dir)
+			updateDirection();
 		if (deltaPos.x > 0.f)
 			calcPos.x += getSize().x;
 
@@ -93,9 +88,9 @@ bool Character::move(std::unique_ptr< std::vector < std::vector< std::unique_ptr
 		for (auto y = indStart.y; y <= indEnd.y; y++)
 			if (indStart.x < (*blocks).size() && y < (*blocks)[indStart.x].size() && (*blocks)[indStart.x][y])
 			{
-				detectedCollision = detectedCollision || (*blocks)[indStart.x][y]->isCollidable();
-				if ((*blocks)[indStart.x][y]->kills())
-					alive = false;
+				detectedCollision = detectedCollision || (*blocks)[indStart.x][y]->isCollidable(isPlayer);
+				if ((*blocks)[indStart.x][y]->kills() && isPlayer)
+					kill();
 			}
 	}
 	else
@@ -108,9 +103,9 @@ bool Character::move(std::unique_ptr< std::vector < std::vector< std::unique_ptr
 		for (auto x = indStart.x; x <= indEnd.x; x++)
 			if (x < (*blocks).size() && indStart.y < (*blocks)[x].size() && (*blocks)[x][indStart.y])
 			{
-				detectedCollision = detectedCollision || (*blocks)[x][indStart.y]->isCollidable();
-				if ((*blocks)[x][indStart.y]->kills())
-					alive = false;
+				detectedCollision = detectedCollision || (*blocks)[x][indStart.y]->isCollidable(isPlayer);
+				if ((*blocks)[x][indStart.y]->kills() && isPlayer)
+					kill();
 			}
 	}
 
@@ -124,13 +119,13 @@ bool Character::move(std::unique_ptr< std::vector < std::vector< std::unique_ptr
 
 sf::Vector2u Character::getSize()
 {
-	return (*spriteTextures)[0].getSize();
+	return spriteTextures[0]->getSize();
 }
 
-void Character::handlePhysics(std::unique_ptr< std::vector < std::vector< std::unique_ptr <Block> > > >& blocks)
+void Character::handlePhysics(std::unique_ptr< std::vector < std::vector< std::unique_ptr <Block> > > >& blocks, bool isPlayer)
 {
 	try {
-		if (move(blocks, { 0.f, speed * deltaTime / 1000.f }))
+		if (move(blocks, { 0.f, speed * deltaTime / 1000.f }, isPlayer))
 			speed += GRAVITY * deltaTime;
 		else
 			speed = 0.f;
@@ -138,7 +133,7 @@ void Character::handlePhysics(std::unique_ptr< std::vector < std::vector< std::u
 		if (speed > MAX_CHARACTER_SPEED)
 			speed = MAX_CHARACTER_SPEED;
 	} catch (std::out_of_range) {
-		alive = false;
+		kill();
 	}
 }
 
@@ -163,8 +158,19 @@ void Character::kill()
 	alive = false;
 }
 
-void Character::flipX()
+void Character::updateDirection()
 {
-	for (auto& sprite : *spriteTextures)
-		sprite.setScale({ -1.f * sprite.getScale().x, 1.f });
+	float scaleX = direction ? -1.f : 1.f;
+	for (auto& sprite : spriteTextures)
+		sprite->setScale({ scaleX, 1.f });
+}
+
+sf::FloatRect Character::getGlobalBounds()
+{
+	return spriteTextures[0]->getGlobalBounds();
+}
+
+bool Character::isIntersectingWith(sf::FloatRect rect)
+{
+	return getGlobalBounds().intersects(rect);
 }

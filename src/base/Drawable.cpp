@@ -64,3 +64,8 @@ sf::Vector2f Drawable::getScale()
 {
 	return spriteHandle.getScale();
 }
+
+sf::FloatRect Drawable::getGlobalBounds()
+{
+	return spriteHandle.getGlobalBounds();
+}

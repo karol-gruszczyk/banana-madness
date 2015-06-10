@@ -32,7 +32,7 @@ void Level::loadMap(std::string mapPath)
 {
 	MapParser parser(mapPath);
 	parser.parseFile();
-	player = std::make_unique<Playable>(parser.getPlayerSpritePaths(), 0.1f, parser.getPlayerPosition());
+	player = std::make_unique<Playable>(parser.getPlayerSpritePaths(), SPRITE_DELTA_TIME, parser.getPlayerPosition());
 	enemies = std::move(parser.getEnemies());
 	blocks = std::move(parser.getBlockArray());
 
@@ -51,18 +51,32 @@ void Level::loadMap(std::string mapPath)
 	gameOverTextCounter = 0;
 	gameOverText.setString("");
 	loaded = true;
+
+	lastFrameTime = clock();
 }
 
 void Level::runFrame(BananaMadness::GameState& gameState, std::vector<unsigned> pressedKeys, std::vector<unsigned> releasedKeys)
 {
+	deltaTime = (float)difftime(clock(), lastFrameTime) / CLOCKS_PER_SEC * 1000.f;
 	if (player->isAlive())
 	{
 		if (levelMusic.getStatus() != sf::Music::Status::Playing && gameState == BananaMadness::GameState::IN_GAME)
 			levelMusic.play();
 		handleInput(gameState, pressedKeys, releasedKeys);
 		player->update(blocks, pressedKeys, releasedKeys);
-		for (auto& enemy : *enemies)
-			enemy->update(blocks);
+		for (auto enemyIt = enemies->begin(); enemyIt != enemies->end();)
+		{
+			(*enemyIt)->update(blocks);
+
+			if ((*enemyIt)->isIntersectingWith(player->getGlobalBounds()))
+				player->kill();
+			if (!(*enemyIt)->isAlive())
+				enemyIt = enemies->erase(enemyIt);
+			else
+				enemyIt++;
+		}
+
+
 		if (player->hasReachedEndOfMap())
 		{
 			levelMusic.stop();
@@ -97,6 +111,7 @@ void Level::runFrame(BananaMadness::GameState& gameState, std::vector<unsigned> 
 		}
 	}
 	render();
+	lastFrameTime = clock();
 }
 
 void Level::render()

@@ -1,11 +1,15 @@
 #pragma once
 
-#include <ctime>
+#include <SFML/Graphics.hpp>
 
-#ifdef _DEBUG
+#if _DEBUG
 	#define INITIAL_GAME_STATE BananaMadness::GameState::IN_MENU
+	#define GAME_OVER_DELAY 0.f
+	#define INITIAL_LEVEL 1
 #else
 	#define INITIAL_GAME_STATE BananaMadness::GameState::IN_INTRO
+	#define GAME_OVER_DELAY 3.75f
+	#define INITIAL_LEVEL 0
 #endif
 
 #define WINDOW_TITLE "Banana Madness: a journey into insanity"
@@ -21,14 +25,15 @@
 #define HEADER_FONT_PATH "data/rockgarage.ttf"
 #define SIMPLE_FONT_PATH "data/arial.ttf"
 #define LEVEL_CLEARED_SOUND_PATH "data/sound/level_cleared.wav"
+#define BLOCK_SIZE 50.f
 
-#define GRAVITY 9.81f
-#define MAX_CHARACTER_SPEED 750.f
-#define PLAYER_JUMP_SPEED 2000.f
-#define PLAYER_WALK_SPEED 0.6f
-#define GAME_OVER_DELAY 3.75f
+#define GRAVITY 5.f
+#define POSITION_BIAS 0.1f
+#define MAX_CHARACTER_SPEED 500.f
+#define PLAYER_JUMP_SPEED 1500.f
+#define PLAYER_WALK_SPEED 0.4f
 
-#define ENEMY_MOVING_SPEED 0.5f
+#define ENEMY_MOVING_SPEED 0.3f
 #define ENEMY_JUMP_SPEED 2000.f
 
 #define SPRITE_DELTA_TIME 0.05f
@@ -42,5 +47,5 @@ namespace BananaMadness
 #define NUM_LEVELS 2
 extern const char* levels[2];
 
-extern clock_t lastFrameTime;
+extern sf::Clock lastFrameTime;
 extern float deltaTime;

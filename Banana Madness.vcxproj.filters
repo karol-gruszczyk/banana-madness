@@ -69,6 +69,9 @@
     <ClCompile Include="src\characters\JumpingEnemy.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\map\blocks\TopInvisibleBlock.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\GameManager.h">
@@ -123,6 +126,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\characters\JumpingEnemy.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\map\blocks\TopInvisibleBlock.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -15,7 +15,11 @@ void Playable::update(std::unique_ptr< std::vector < std::vector< std::unique_pt
 {
 	Character::update(blocks, true);
 	for (auto& key : pressedKeys)
+	{
+		if (key == sf::Keyboard::Space && speed == 0.f)
+			speed = -PLAYER_JUMP_SPEED;
 		isKeyPressed[key] = true;
+	}
 	for (auto& key : releasedKeys)
 		isKeyPressed[key] = false;
 
@@ -31,10 +35,6 @@ void Playable::update(std::unique_ptr< std::vector < std::vector< std::unique_pt
 		case sf::Keyboard::Right:
 			move(blocks, { PLAYER_WALK_SPEED * deltaTime, 0.f });
 			break;
-		case sf::Keyboard::Space:
-			if (speed == 0.f && !move(blocks, { 0.f, 1.f }))
-				speed = -PLAYER_JUMP_SPEED;
-			break;
 		}
 	}
 }
@@ -42,7 +42,7 @@ void Playable::update(std::unique_ptr< std::vector < std::vector< std::unique_pt
 bool Playable::move(std::unique_ptr< std::vector < std::vector< std::unique_ptr <Block> > > >& blocks, sf::Vector2f deltaPos, bool isPlayer /* = true */)
 {
 	auto newX = getPosition().x + deltaPos.x;
-	auto maxX = (*blocks)[0][0]->getSize().x * (*blocks).size() - getSize().x;
+	auto maxX = BLOCK_SIZE * blocks->size() - getSize().x;
 	if (newX > maxX)
 		reachedEndOfMap = true;
 	return Character::move(blocks, deltaPos, isPlayer);

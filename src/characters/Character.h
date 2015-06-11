@@ -28,6 +28,7 @@ protected:
 	static sf::Vector2u getBlockIndices(std::unique_ptr< std::vector < std::vector< std::unique_ptr <Block> > > >& blocks, sf::Vector2f pos);
 	virtual bool move(std::unique_ptr< std::vector < std::vector< std::unique_ptr <Block> > > >& blocks, sf::Vector2f deltaPos, bool isPlayer);
 	void handlePhysics(std::unique_ptr< std::vector < std::vector< std::unique_ptr <Block> > > >& blocks, bool isPlayer);
+	std::vector<std::unique_ptr<Drawable>> spriteTextures;
 	float speed;
 	bool alive;
 	bool direction;
@@ -37,6 +38,5 @@ private:
 	float spriteDelta;
 	float spriteDeltaTime;
 	unsigned currentSprite;
-	std::vector<std::unique_ptr<Drawable>> spriteTextures;
 };
 

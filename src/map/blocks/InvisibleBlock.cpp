@@ -14,7 +14,7 @@ void InvisibleBlock::render()
 		Block::render();
 }
 
-bool InvisibleBlock::isCollidable(bool isPlayer /* = false */)
+bool InvisibleBlock::isCollidable(bool isPlayer, sf::Vector2f direction)
 {
 	if (isPlayer)
 		visible = true;

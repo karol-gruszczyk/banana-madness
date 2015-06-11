@@ -32,10 +32,10 @@ void Block::setMapPosition(sf::Vector2u mapPosition)
 
 sf::Vector2f Block::getWorldPosition(sf::Vector2u mapPosition)
 {
-	return sf::Vector2f( float(mapPosition.x * getSize().x), float(windowHandle->getSize().y - (mapPosition.y + 1) * getSize().y ));
+	return sf::Vector2f(mapPosition.x * BLOCK_SIZE, windowHandle->getSize().y - (mapPosition.y + 1) * BLOCK_SIZE);
 }
 
-bool Block::isCollidable(bool isPlayer)
+bool Block::isCollidable(bool isPlayer, sf::Vector2f direction)
 {
 	return true;
 }

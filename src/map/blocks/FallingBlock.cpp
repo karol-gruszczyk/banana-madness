@@ -15,8 +15,8 @@ void FallingBlock::render()
 	Block::render();
 }
 
-bool FallingBlock::isCollidable(bool isPlayer /*= false*/)
+bool FallingBlock::isCollidable(bool isPlayer, sf::Vector2f direction)
 {
-	touched = true;
+	touched = touched || isPlayer;
 	return false;
 }

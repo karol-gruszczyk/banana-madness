@@ -9,6 +9,7 @@
 
 #include <src/map/blocks/SpikeBlock.h>
 #include <src/map/blocks/FallingBlock.h>
+#include <src/map/blocks/TopInvisibleBlock.h>
 #include <src/characters/JumpingEnemy.h>
 
 

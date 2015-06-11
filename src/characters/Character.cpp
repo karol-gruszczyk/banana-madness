@@ -66,14 +66,17 @@ bool Character::move(std::unique_ptr< std::vector < std::vector< std::unique_ptr
 {
 	if (deltaPos.x != 0.f && deltaPos.y != 0.f)
 		return move(blocks, { deltaPos.x, 0.f }, isPlayer) || move(blocks, { 0.f, deltaPos.y }, isPlayer);
+	else if (deltaPos == sf::Vector2f(0.f, 0.f))
+		return false;
+
 
 	sf::Vector2f newPos = { position.x + deltaPos.x, position.y + deltaPos.y };
-	auto maxX = (*blocks)[0][0]->getSize().x * (*blocks).size() - getSize().x;
+	auto maxX = BLOCK_SIZE * blocks->size() - getSize().x;
 	if (newPos.x < 0.f || newPos.x > maxX || newPos.y < 0.f)
 		return false;
 
 	sf::Vector2f calcPos = newPos;
-	bool detectedCollision = false;
+	std::vector<Block*> blockToCheck;
 	if (deltaPos.x != 0.f)
 	{
 		auto last_dir = direction;
@@ -87,11 +90,7 @@ bool Character::move(std::unique_ptr< std::vector < std::vector< std::unique_ptr
 		auto indEnd = getBlockIndices(blocks, calcPos);
 		for (auto y = indStart.y; y <= indEnd.y; y++)
 			if (indStart.x < (*blocks).size() && y < (*blocks)[indStart.x].size() && (*blocks)[indStart.x][y])
-			{
-				detectedCollision = detectedCollision || (*blocks)[indStart.x][y]->isCollidable(isPlayer);
-				if ((*blocks)[indStart.x][y]->kills() && isPlayer)
-					kill();
-			}
+				blockToCheck.push_back((*blocks)[indStart.x][y].get());
 	}
 	else
 	{
@@ -102,11 +101,15 @@ bool Character::move(std::unique_ptr< std::vector < std::vector< std::unique_ptr
 		auto indEnd = getBlockIndices(blocks, { calcPos.x + getSize().x, calcPos.y });
 		for (auto x = indStart.x; x <= indEnd.x; x++)
 			if (x < (*blocks).size() && indStart.y < (*blocks)[x].size() && (*blocks)[x][indStart.y])
-			{
-				detectedCollision = detectedCollision || (*blocks)[x][indStart.y]->isCollidable(isPlayer);
-				if ((*blocks)[x][indStart.y]->kills() && isPlayer)
-					kill();
-			}
+				blockToCheck.push_back((*blocks)[x][indStart.y].get());
+	}
+
+	bool detectedCollision = false;
+	for (auto& block : blockToCheck)
+	{
+		detectedCollision = detectedCollision || block->isCollidable(isPlayer, deltaPos);
+		if (block->kills() && isPlayer)
+			kill();
 	}
 
 	if (!detectedCollision)
@@ -125,7 +128,7 @@ sf::Vector2u Character::getSize()
 void Character::handlePhysics(std::unique_ptr< std::vector < std::vector< std::unique_ptr <Block> > > >& blocks, bool isPlayer)
 {
 	try {
-		if (move(blocks, { 0.f, speed * deltaTime / 1000.f }, isPlayer))
+		if (move(blocks, { 0.f, speed * deltaTime / 1000.f + POSITION_BIAS }, isPlayer))
 			speed += GRAVITY * deltaTime;
 		else
 			speed = 0.f;
@@ -140,9 +143,8 @@ void Character::handlePhysics(std::unique_ptr< std::vector < std::vector< std::u
 sf::Vector2u Character::getBlockIndices(std::unique_ptr< std::vector < std::vector< std::unique_ptr <Block> > > >& blocks, sf::Vector2f pos)
 {
 	float x, y;
-	auto& block = *(*blocks)[0][0];
-	x = pos.x / block.getSize().x;
-	y = (block.getPosition().y - pos.y) / block.getSize().y + 1;
+	x = pos.x / BLOCK_SIZE;
+	y = (Block::getWorldPosition({ 0, 0 }).y - pos.y) / BLOCK_SIZE + 1;
 	if (x <= -1.f || y <= -1.f)
 		throw std::out_of_range("The gives position does not match any map coordinates");
 	return{ unsigned(x), unsigned(y) };

@@ -166,7 +166,7 @@ void Menu::clickButton(BananaMadness::GameState& gameState, Level& mapHandle)
 			break;
 		case 1: // extremely hard
 			musicHandle.stop();
-			mapHandle.loadLevel(0);
+			mapHandle.loadLevel(INITIAL_LEVEL);
 			gameState = BananaMadness::IN_GAME;
 			break;
 		case 2: // back

@@ -9,7 +9,7 @@ Level::Level(sf::RenderWindow& windowHandle, const char** levelPaths) :
 		throw FileLoadException(SIMPLE_FONT_PATH);
 	text.setFont(font);
 	text.setColor(sf::Color::Black);
-	text.setCharacterSize(15);
+	text.setCharacterSize(30);
 
 	if (!gameOverFont.loadFromFile(HEADER_FONT_PATH))
 		throw FileLoadException(HEADER_FONT_PATH);
@@ -51,13 +51,11 @@ void Level::loadMap(std::string mapPath)
 	gameOverTextCounter = 0;
 	gameOverText.setString("");
 	loaded = true;
-
-	lastFrameTime = clock();
 }
 
 void Level::runFrame(BananaMadness::GameState& gameState, std::vector<unsigned> pressedKeys, std::vector<unsigned> releasedKeys)
 {
-	deltaTime = (float)difftime(clock(), lastFrameTime) / CLOCKS_PER_SEC * 1000.f;
+	deltaTime = lastFrameTime.restart().asMicroseconds() / 1000.f;
 	if (player->isAlive())
 	{
 		if (levelMusic.getStatus() != sf::Music::Status::Playing && gameState == BananaMadness::GameState::IN_GAME)
@@ -111,7 +109,6 @@ void Level::runFrame(BananaMadness::GameState& gameState, std::vector<unsigned> 
 		}
 	}
 	render();
-	lastFrameTime = clock();
 }
 
 void Level::render()
@@ -122,12 +119,12 @@ void Level::render()
 	std::ostringstream stream;
 	stream << "Lifes left: " << lifes;
 	text.setString(stream.str());
-	text.setPosition({ windowHandle->getSize().x - 1.1f * text.getLocalBounds().width, 0.f });
+	text.setPosition({ windowHandle->getSize().x / 2.f, 0.f });
 	windowHandle->draw(text);
 
 	windowHandle->setView(gameView);
 	float winWidth2 = windowHandle->getSize().x / 2.f;
-	float mapWidth = (*blocks)[0][0]->getSize().x * (float)(*blocks).size();
+	float mapWidth = BLOCK_SIZE * (float)blocks->size();
 	float xCenter = std::max(std::min(player->getPosition().x, mapWidth - winWidth2), winWidth2);
 	float yCenter = gameView.getCenter().y;
 	gameView.setCenter(xCenter, yCenter);

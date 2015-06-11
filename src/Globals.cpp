@@ -6,4 +6,4 @@ extern const char* levels[2] = {
 };
 
 extern float deltaTime = 0.f;
-extern clock_t lastFrameTime = clock();
+extern sf::Clock lastFrameTime = sf::Clock();

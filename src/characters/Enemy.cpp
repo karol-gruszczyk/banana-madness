@@ -3,14 +3,14 @@
 
 Enemy::Enemy(std::vector<std::string>& texturePaths, float spriteDelta, sf::Vector2f position, float end) :
 	Character(texturePaths, spriteDelta, position),
-	spawnPosition(position)
+	spawnPosition({ position.x, position.y - spriteTextures[0]->getSize().y })
 {
 	initPositions(position.x, end);
 }
 
 Enemy::Enemy(Enemy& instance, sf::Vector2f position, float end) :
 	Character(instance, position),
-	spawnPosition(position)
+	spawnPosition({ position.x, position.y - spriteTextures[0]->getSize().y })
 {
 	initPositions(position.x, end);
 }

@@ -24,12 +24,14 @@ blocks
 G=(img=ground,type=normal)
 B=(img=brick,type=normal)
 I=(img=brick,type=invisible)
+T=(img=brick,type=topinvisible)
 S=(img=spike,type=spike)
 F=(img=ground,type=falling)
 D=(img=brick,type=falling)
 !blocks
 enemies
-nigga_mario=(start=21 6,end=17,sprite=nigga_mario,type=normal)
+nigga_mario=(start=26 5,end=17,sprite=nigga_mario,type=normal)
+nigga_mario=(start=35 6,end=30,sprite=nigga_mario,type=jumping)
 !enemies
 map
 GG
@@ -39,7 +41,7 @@ GG
 GG
 FF
 FF
-FF  B
+FF  B  
 FF  B
 FF  D
 FF  D
@@ -50,12 +52,42 @@ GG
 GG
 GG
 GG
+    I
 
 
+GG
+GG  D
+GG  D
 GG  B
-GG  B
 GG
 GG
 GG
 GG
+FF
+FF
+GG
+GG
+GG
+GG
+GG
+GG
+GG
+GG
+GGBBB
+GG  T  T
+GG  T
+GG  T
+GG  T
+GG  T
+GG  T
+    T
+GGBBBS
+    B
+    B
+    D
+    D
+    D
+    B
+    B
+    BS
 !map

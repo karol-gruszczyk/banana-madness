@@ -8,9 +8,9 @@ SpikeBlock::SpikeBlock(SpikeBlock& instance, sf::Vector2u mapPosition /* = */) :
 	InvisibleBlock(instance, mapPosition)
 {}
 
-bool SpikeBlock::isCollidable(bool isPlayer /* = false */)
+bool SpikeBlock::isCollidable(bool isPlayer, sf::Vector2f direction)
 {
-	InvisibleBlock::isCollidable(isPlayer);
+	InvisibleBlock::isCollidable(isPlayer, direction);
 	return false;
 }
 

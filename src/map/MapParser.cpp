@@ -81,6 +81,8 @@ void MapParser::parseBlocks(std::ifstream& file)
 		
 		if (blockType == "normal")
 			blocks[blockName] = std::make_unique<Block>(imgPath);
+		else if (blockType == "topinvisible")
+			blocks[blockName] = std::make_unique<TopInvisibleBlock>(imgPath);
 		else if (blockType == "invisible")
 			blocks[blockName] = std::make_unique<InvisibleBlock>(imgPath);
 		else if (blockType == "spike")
@@ -210,6 +212,8 @@ void MapParser::parseMap(std::ifstream& file)
 				{
 					if (auto ptr = dynamic_cast<SpikeBlock*>(blockInstaces[blockName]))
 						(*blockArray)[i][j] = std::make_unique<SpikeBlock>(*ptr, sf::Vector2u{ i, j });
+					else if (auto ptr = dynamic_cast<TopInvisibleBlock*>(blockInstaces[blockName]))
+						(*blockArray)[i][j] = std::make_unique<TopInvisibleBlock>(*ptr, sf::Vector2u{ i, j });
 					else if (auto ptr = dynamic_cast<InvisibleBlock*>(blockInstaces[blockName]))
 						(*blockArray)[i][j] = std::make_unique<InvisibleBlock>(*ptr, sf::Vector2u{ i, j });
 					else if (auto ptr = dynamic_cast<FallingBlock*>(blockInstaces[blockName]))
@@ -265,7 +269,7 @@ sf::Vector2f MapParser::getPlayerPosition()
 	std::stringstream stream;
 	stream << str[0] << " " << str[1];
 	stream >> position.x >> position.y;
-	return (*blockArray)[0][0]->getWorldPosition(position);
+	return Block::getWorldPosition(position);
 }
 
 std::unique_ptr< std::vector < std::unique_ptr <Enemy> > >& MapParser::getEnemies()

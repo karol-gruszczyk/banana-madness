@@ -55,7 +55,6 @@ void Level::loadMap(std::string mapPath)
 
 void Level::runFrame(BananaMadness::GameState& gameState, std::vector<unsigned> pressedKeys, std::vector<unsigned> releasedKeys)
 {
-	deltaTime = lastFrameTime.restart().asMicroseconds() / 1000.f;
 	if (player->isAlive())
 	{
 		if (levelMusic.getStatus() != sf::Music::Status::Playing && gameState == BananaMadness::GameState::IN_GAME)
@@ -113,14 +112,10 @@ void Level::runFrame(BananaMadness::GameState& gameState, std::vector<unsigned> 
 
 void Level::render()
 {
+	deltaTime = lastFrameTime.restart().asMicroseconds() / 1000.f;
 	auto bgView = sf::View(sf::FloatRect(0.f, 0.f, (float)windowHandle->getSize().x, (float)windowHandle->getSize().y));
 	windowHandle->setView(bgView);
 	backgroundImage.render();
-	std::ostringstream stream;
-	stream << "Lifes left: " << lifes;
-	text.setString(stream.str());
-	text.setPosition({ windowHandle->getSize().x / 2.f, 0.f });
-	windowHandle->draw(text);
 
 	windowHandle->setView(gameView);
 	float winWidth2 = windowHandle->getSize().x / 2.f;
@@ -136,6 +131,13 @@ void Level::render()
 	for (auto& enemy : *enemies)
 		enemy->render();
 	player->render();
+
+	windowHandle->setView(bgView);
+	std::ostringstream stream;
+	stream << "Lifes left: " << lifes;
+	text.setString(stream.str());
+	text.setPosition({ windowHandle->getSize().x / 2.f, 0.f });
+	windowHandle->draw(text);
 	windowHandle->draw(gameOverText);
 }
 

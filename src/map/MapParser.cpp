@@ -183,7 +183,10 @@ std::vector<std::string> MapParser::getSpritePaths(std::string spriteString)
 		characterSprites.push_back(filePaths[tmp[0]]);
 		sprites_str = tmp[1];
 	}
-	characterSprites.push_back(filePaths[sprites_str]);
+	if (filePaths.find(sprites_str) != filePaths.end())
+		characterSprites.push_back(filePaths[sprites_str]);
+ 	else
+ 		throw std::invalid_argument(std::string("invalid key '" + sprites_str + "'"));
 	return characterSprites;
 }
 

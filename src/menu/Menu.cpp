@@ -24,6 +24,13 @@ Menu::Menu(sf::RenderWindow& windowHandle) : windowHandle(&windowHandle)
 	headerText.setFont(headerFont);
 	headerText.setColor(sf::Color::White);
 	headerText.setCharacterSize(100);
+
+	if (!menuFont.loadFromFile(SIMPLE_FONT_PATH))
+		throw FileLoadException(SIMPLE_FONT_PATH);
+	menuText.setFont(menuFont);
+	menuText.setColor(sf::Color::Black);
+	menuText.setCharacterSize(32);
+	menuText.setPosition({ windowHandle.getSize().x / 2.f, 0.f });
 }
 
 void Menu::runFrame(BananaMadness::GameState& gameState, std::vector<unsigned> pressedKeys, Level& mapHandle)
@@ -63,6 +70,13 @@ void Menu::runFrame(BananaMadness::GameState& gameState, std::vector<unsigned> p
 	selectedImage.render();
 	for (auto& btn : buttons[selectedMenu])
 		btn->render();
+
+	if (selectedMenu == MenuState::HELP_MENU)
+	{
+		menuText.setString("TO GO LEFT: LEFT ARROW\n\nTO GO RIGHT: RIGHT ARROW\n\nTO JUMP: SPACE");
+		menuText.setPosition({ windowHandle->getSize().x / 2.f - menuText.getLocalBounds().width / 2.f, 200.f });
+		windowHandle->draw(menuText);
+	}
 }
 
 void Menu::setupButtons(std::string buttonImage, sf::Vector2u resolution)
@@ -85,6 +99,8 @@ void Menu::setupButtons(std::string buttonImage, sf::Vector2u resolution)
 	buttons[LEVEL_CLEARED_MENU].push_back(std::make_unique<Button>(refBtn, "REPLAY"));
 	buttons[LEVEL_CLEARED_MENU].push_back(std::make_unique<Button>(refBtn, "NEXT LEVEL"));
 
+	buttons[HELP_MENU].push_back(std::make_unique<Button>(refBtn, "BACK"));
+
 	unsigned x = unsigned(resolution.x / 2.f - refBtn.getSize().x / 2.f);
 	unsigned y_tmp = unsigned(resolution.y / 2.f);
 	for (auto& sub_menu : buttons)
@@ -93,6 +109,7 @@ void Menu::setupButtons(std::string buttonImage, sf::Vector2u resolution)
 			float offset = sub_menu.size() / 2.f - i * 1.1f;
 			sub_menu[i]->setPosition({ (float)x, y_tmp - offset * refBtn.getSize().y });
 		}
+	buttons[HELP_MENU][0]->setPosition({ buttons[HELP_MENU][0]->getPosition().x, resolution.y * 0.7f });
 }
 
 void Menu::selectButton(MenuState state, unsigned buttonIndex, bool playSound /* = false */)
@@ -151,6 +168,7 @@ void Menu::clickButton(BananaMadness::GameState& gameState, Level& mapHandle)
 			selectButton(PLAY_MENU, 0);
 			break;
 		case 1: // help
+			selectButton(HELP_MENU, 0);
 			break;
 		case 2: // quit
 			exit(EXIT_SUCCESS);
@@ -209,6 +227,9 @@ void Menu::clickButton(BananaMadness::GameState& gameState, Level& mapHandle)
 		}
 		gameState = BananaMadness::IN_GAME;
 		musicHandle.stop();
+		break;
+	case Menu::HELP_MENU: //replay
+		selectButton(MAIN_MENU, 0);
 		break;
 	}
 	buttons[selectedMenu][selectedButton]->playClickSound();

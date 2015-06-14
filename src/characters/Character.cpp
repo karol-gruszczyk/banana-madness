@@ -50,7 +50,6 @@ void Character::update(std::unique_ptr< std::vector < std::vector< std::unique_p
 
 void Character::setPosition(sf::Vector2f newPos)
 {
-	moving = position.x != newPos.x;
 	float offset = direction ? getSize().x : 0.f;
 	position = newPos;
 	for (auto& i : spriteTextures)
@@ -74,6 +73,7 @@ bool Character::move(std::unique_ptr< std::vector < std::vector< std::unique_ptr
 	auto maxX = BLOCK_SIZE * blocks->size() - getSize().x;
 	if (newPos.x < 0.f || newPos.x > maxX || newPos.y < 0.f)
 		return false;
+	moving = deltaPos.x != 0.f;
 
 	sf::Vector2f calcPos = newPos;
 	std::vector<Block*> blockToCheck;

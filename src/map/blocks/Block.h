@@ -7,7 +7,6 @@ class Block : public Drawable
 public:
 	Block(std::string imagePath, sf::Vector2u mapPosition = {});
 	Block(Block& instance, sf::Vector2u mapPosition = {});
-	void load(std::string imagePath, sf::Vector2u mapPosition = {});
 	sf::Vector2u getMapPosition();
 	void setMapPosition(sf::Vector2u mapPostion);
 	static sf::Vector2f getWorldPosition(sf::Vector2u mapPostion);

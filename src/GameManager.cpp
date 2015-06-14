@@ -3,7 +3,7 @@
 
 GameManager::GameManager(sf::Vector2u resolution, bool fullscreen)
 {
-	windowHandle.create(sf::VideoMode(resolution.x, resolution.y), 
+	windowHandle.create(sf::VideoMode(resolution.x, resolution.y),
 						WINDOW_TITLE, 
 						fullscreen ? sf::Style::Fullscreen : sf::Style::Close);
 	windowHandle.setPosition({ 0, 0 });

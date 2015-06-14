@@ -1,19 +1,14 @@
 #include "Block.h"
 
-Block::Block(std::string imagePath, sf::Vector2u mapPosition /* = { 0, 0} */)
+Block::Block(std::string imagePath, sf::Vector2u mapPosition /* = { 0, 0} */) :
+	Drawable(imagePath)
 {
-	load(imagePath, mapPosition);
+	setMapPosition(mapPosition);
 }
 
 Block::Block(Block& instance, sf::Vector2u mapPosition /* = { 0, 0} */) :
 	Drawable(instance)
 {
-	setMapPosition(mapPosition);
-}
-
-void Block::load(std::string imagePath, sf::Vector2u mapPosition /* = { 0, 0} */)
-{
-	Drawable::load(imagePath);
 	setMapPosition(mapPosition);
 }
 

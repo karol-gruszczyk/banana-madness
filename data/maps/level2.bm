@@ -32,9 +32,9 @@ S=(img=spike,type=spike)
 F=(img=brick,type=falling)
 E=(img=spike,type=falling)
 !blocks
+enemies
 nyan_cat=(start=30 4,end=10,sprite=nyan_cat,type=normal)
 nyan_cat=(start=32 4,end=10,sprite=nyan_cat,type=normal)
-enemies
 gorilla=(start=60 4,end=70,sprite=gorilla,type=jumping)
 !enemies
 map

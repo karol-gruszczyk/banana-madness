@@ -29,6 +29,5 @@ protected:
 private:
 	std::shared_ptr<sf::Texture> textureHandle;
 	sf::Sprite spriteHandle;
-	sf::Vector2u size;
 };
 

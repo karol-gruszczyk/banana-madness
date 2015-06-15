@@ -16,7 +16,6 @@ public:
 	void playHoverSound();
 	void playClickSound();
 private:
-	// for the following 4 unique_ptr are deallocated in wrong order, causing an "memory access violation exception" at window close
 	std::shared_ptr<sf::Sound> clickSound;
 	std::shared_ptr<sf::SoundBuffer> clickSoundBuffer;
 	std::shared_ptr<sf::Sound> hoverSound;
